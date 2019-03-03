@@ -18,37 +18,18 @@ const styles = {
 };
 
 class SimpleBottomNavigation extends React.Component {
-  state = {
-    value: 0,
-  };
-
-  handleChange = (event, value) => {
-    this.setState({ value });
-  };
-
-  navClicked = (label, event) => {
-      let route = {
-          Workouts: '/',
-          History: '/history',
-          Settings: '/settings'
-      }[label];
-      this.props.history.push(route);
-  }
-
   render() {
-    const { classes } = this.props;
-    const { value } = this.state;
+    const { classes, navClickHandler, selectedIndex } = this.props;
 
     return (
       <BottomNavigation
-        value={value}
-        onChange={this.handleChange}
+        value={selectedIndex}
         showLabels
         className={classes.root}
       >
-        <BottomNavigationAction label="Workouts" icon={<FitnessCenterIcon />} onClick={this.navClicked.bind(this, "Workouts")} />
-        <BottomNavigationAction label="History" icon={<CalendarTodayIcon />} onClick={this.navClicked.bind(this, "History")} />
-        <BottomNavigationAction label="Settings" icon={<SettingsIcon />} onClick={this.navClicked.bind(this, "Settings")} />
+        <BottomNavigationAction label="Workouts" icon={<FitnessCenterIcon />} onClick={navClickHandler("Workouts")} />
+        <BottomNavigationAction label="History" icon={<CalendarTodayIcon />} onClick={navClickHandler("History")} />
+        <BottomNavigationAction label="Settings" icon={<SettingsIcon />} onClick={navClickHandler("Settings")} />
       </BottomNavigation>
     );
   }
