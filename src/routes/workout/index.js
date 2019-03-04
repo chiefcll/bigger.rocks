@@ -68,18 +68,14 @@ const workout =
     };
 
 class Workout extends Component {
-
-    constructor() {
-        super();
-        this.state = {
-            workout
-        };
-    }
-
     audio = React.createRef();
+    state = { workout };
 
-    onExpire() {
-        this.audio.play();
+    onExpire = () => {
+        let sound = this.audio.current;
+        sound.play().catch(e => {
+            console.log(e);
+        });
     }
 
     completeSet = (exercise, index) => {
@@ -106,7 +102,7 @@ class Workout extends Component {
         const { classes } = this.props;
         const { workout } = this.state;
         var t = new Date();
-        t.setSeconds(t.getSeconds() + 90); // 10 minutes timer
+        t.setSeconds(t.getSeconds() + 5); // 10 minutes timer
         const timeBeforeNextSet = t;
         return (
             <Grid container spacing={16} alignItems={'center'}>
@@ -123,7 +119,7 @@ class Workout extends Component {
                                 {`${sets}x${reps} ${weight}${unit}`}
                             </Grid>
                             <Grid container justify={'space-between'}>
-                            {times(sets)( (key, index) => 
+                            {times(sets)( (key, index) =>
                                 <Fab key={index} onClick={event => this.completeSet(exercise, index)}>
                                     <span>{exercise.setsCompleted[index]}</span>
                                 </Fab>
@@ -135,15 +131,14 @@ class Workout extends Component {
                 )})
             }
             <div>
-                Great job - time to next set: 
+                Great job - time to next set:
                 <Timer className={classes.timer} expiryTimestamp={timeBeforeNextSet} onExpire={this.onExpire} />
-                <audio ref={this.audio} src="/media/examples/t-rex-roar.mp3" preload="auto" />
+                <audio ref={this.audio} src="/assets/beep-01a.mp3" preload="auto" />
             </div>
-            
+
             </Grid>
         );
     }
 }
 
 export default withStyles(styles)(Workout);
-  
