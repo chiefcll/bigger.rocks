@@ -52,8 +52,10 @@ class Layout extends React.Component {
     return (
       <>
         <Header pageName={this.state.pageName} />
+        <div style={{ padding: 8 }}>
         {this.props.children}
-        {showFooter && 
+        </div>
+        {showFooter &&
           <Footer navClickHandler={this.navClicked} selectedIndex={this.state.selectedIndex} />
         }
       </>

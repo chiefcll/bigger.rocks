@@ -6,11 +6,14 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Fab from '@material-ui/core/Fab';
 import Timer from '../../components/timer';
+import Snackbar from '@material-ui/core/Snackbar';
+import SnackbarContent from '@material-ui/core/SnackbarContent';
 
 const styles = theme => ({
   root: {
     ...theme.mixins.gutters(),
-    margin: theme.spacing.unit * 2,
+    margin: theme.spacing.unit,
+    padding: '8px',
     backgroundColor: theme.palette.background.paper,
   },
   exerciseHeader: {
@@ -28,6 +31,14 @@ const styles = theme => ({
   },
   timer: {
     display: 'inline',
+  },
+  timerContainer: {
+      position: 'absolute',
+      bottom: theme.spacing.unit,
+      right: 0,
+      left: theme.spacing.unit,
+      fontSize: '1.5rem',
+      textAlign: 'left'
   }
 });
 
@@ -72,10 +83,10 @@ class Workout extends Component {
     state = { workout };
 
     onExpire = () => {
-        let sound = this.audio.current;
-        sound.play().catch(e => {
-            console.log(e);
-        });
+        // let sound = this.audio.current;
+        // sound.play().catch(e => {
+        //     console.log(e);
+        // });
     }
 
     completeSet = (exercise, index) => {
@@ -121,7 +132,7 @@ class Workout extends Component {
                             <Grid container justify={'space-between'}>
                             {times(sets)( (key, index) =>
                                 <Fab key={index} onClick={event => this.completeSet(exercise, index)}>
-                                    <span>{exercise.setsCompleted[index]}</span>
+                                    <span style={{fontSize: '1.5rem'}}>{exercise.setsCompleted[index]}</span>
                                 </Fab>
                             )}
                             </Grid>
@@ -130,7 +141,7 @@ class Workout extends Component {
                 </Grid>
                 )})
             }
-            <div>
+            <div className={classes.timerContainer}>
                 Great job - time to next set:
                 <Timer className={classes.timer} expiryTimestamp={timeBeforeNextSet} onExpire={this.onExpire} />
                 <audio ref={this.audio} src="/assets/beep-01a.mp3" preload="auto" />

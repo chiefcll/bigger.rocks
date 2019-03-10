@@ -9,6 +9,7 @@ import NotFound from './routes/notfound';
 import Layout from './components/layout';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import './App.css';
+import SimpleStorage from 'react-simple-storage';
 
 class App extends Component {
   componentWillMount() {
@@ -16,17 +17,21 @@ class App extends Component {
 			isAuthed: true
 		});
   }
-  
+
   signIn() {
 		return <SignIn auth={false} />;
   }
 
   render() {
     let { isAuthed } = this.state;
-    
+
     return (
       <div className="App">
         <CssBaseline />
+        <SimpleStorage
+          parent={this}
+          prefix={ 'Workouts' }
+        />
         <Router>
             {isAuthed ?
               <Layout isAuthed={isAuthed}>
@@ -43,7 +48,7 @@ class App extends Component {
             }
 				</Router>
 
-        
+
       </div>
     );
   }
