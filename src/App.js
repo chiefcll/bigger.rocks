@@ -9,7 +9,7 @@ import NotFound from './routes/notfound';
 import Layout from './components/layout';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import './App.css';
-import SimpleStorage from 'react-simple-storage';
+import {Data as DataProvider} from './data';
 
 class App extends Component {
   componentWillMount() {
@@ -28,13 +28,10 @@ class App extends Component {
     return (
       <div className="App">
         <CssBaseline />
-        <SimpleStorage
-          parent={this}
-          prefix={ 'Workouts' }
-        />
         <Router>
             {isAuthed ?
               <Layout isAuthed={isAuthed}>
+                <DataProvider>
                 <Switch>
                   <Route path="/" exact component={Home} />
                   <Route path="/workout" exact render={() => <Workout></Workout>} />
@@ -42,6 +39,7 @@ class App extends Component {
                   <Route path="/history" exact component={History} />
                   <Route component={NotFound} />
                 </Switch>
+                </DataProvider>
               </Layout>
             :
               <Route render={this.signIn} />

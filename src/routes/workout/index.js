@@ -8,6 +8,10 @@ import Fab from '@material-ui/core/Fab';
 import Timer from '../../components/timer';
 import Snackbar from '@material-ui/core/Snackbar';
 import SnackbarContent from '@material-ui/core/SnackbarContent';
+import AppContext from '../../data';
+import Button from '@material-ui/core/Button';
+import Header from '../../components/header';
+import { Link } from 'react-router-dom';
 
 const styles = theme => ({
   root: {
@@ -47,107 +51,109 @@ const times = n => f => {
     return loopFor.map(f);
 }
 
-const workout =
-    {
-        date: 'Sat 2 Mar',
-        exercises: [
-            {
-                name: 'Squat',
-                reps: 5,
-                sets: 5,
-                weight: 110,
-                unit: 'lbs',
-                setsCompleted: []
-            },
-            {
-                name: 'Bench',
-                reps: 5,
-                sets: 5,
-                weight: 160,
-                unit: 'lbs',
-                setsCompleted: []
-            },
-            {
-                name: 'Row',
-                reps: 5,
-                sets: 5,
-                weight: 110,
-                unit: 'lbs',
-                setsCompleted: []
-            }
-        ]
-    };
+function workoutIsCompleted(workout) {
+    return workout.exercises.every(e => e.setsCompleted.length === e.sets);
+}
+
+function getNextWorkout(templates, workout) {
+    let nextId = workout.id++;
+    let nextTemplate = templates.filter(t => t.id === nextId)[0] || templates[0];
+    
+    return {...nextTemplate};
+}
 
 class Workout extends Component {
-    audio = React.createRef();
-    state = { workout };
-
-    onExpire = () => {
-        // let sound = this.audio.current;
-        // sound.play().catch(e => {
-        //     console.log(e);
-        // });
-    }
+    static contextType = AppContext;
+    state = {
+        showTimer: false
+    };
 
     completeSet = (exercise, index) => {
-        this.setState((prevState, props) => {
-            let {workout} = prevState;
-            let repsCompleted = exercise.setsCompleted[index];
+        let {workout} = this.context;
+        let repsCompleted = exercise.setsCompleted[index];
 
-            if (repsCompleted) {
-                repsCompleted--;
-            } else {
-                repsCompleted = exercise.reps;
+        if (repsCompleted) {
+            repsCompleted--;
+        } else {
+            repsCompleted = exercise.reps;
+        }
+        exercise.setsCompleted[index] = repsCompleted;
+
+        this.context.setContext({
+            workout: {
+                ...workout
             }
-            exercise.setsCompleted[index] = repsCompleted;
-
-            return {
-                workout: {
-                    ...workout
-                }
-            };
         });
+
+        this.setState(() => {
+            return {
+                lastCompletedIndex: index,
+                showTimer: true
+            }
+        });
+    }
+
+    completeWorkout = () => {
+        let {workout, completedWorkouts, workoutTemplates} = this.context;
+        
+        if (workoutIsCompleted(workout)) {
+            let nextWorkout = getNextWorkout(workoutTemplates, workout);
+            nextWorkout.date = 'Next';
+
+            this.context.setContext({
+                workout: nextWorkout,
+                completedWorkouts: [workout, ...completedWorkouts],
+            });
+        }
     }
 
     render() {
         const { classes } = this.props;
-        const { workout } = this.state;
-        var t = new Date();
-        t.setSeconds(t.getSeconds() + 5); // 10 minutes timer
-        const timeBeforeNextSet = t;
+        const { showTimer, lastCompletedIndex } = this.state;
+        const { workout } = this.context;
+
         return (
-            <Grid container spacing={16} alignItems={'center'}>
-            {workout.exercises.map((exercise, exerciseIndex) => {
-                const {name, sets, reps, weight, unit} = exercise;
-                return (
-                <Grid key={exerciseIndex} item xs={12}>
-                    <Paper className={classes.root}>
-                        <Grid container alignItems={'center'}>
-                            <Grid item xs={6} className={`${classes.exerciseName} ${classes.exerciseHeader}`}>
-                                {name}
+            <>
+                <Header pageName={'Workout'}>
+                    <Link to="/">
+                        <Button style={{color: 'white'}} onClick={this.completeWorkout}>Done</Button>
+                    </Link>
+                </Header>
+                <Grid container spacing={0} alignItems={'center'}>
+                {workout.exercises.map((exercise, exerciseIndex) => {
+                    const {name, sets, reps, weight, unit} = exercise;
+                    return (
+                    <Grid key={exerciseIndex} item xs={12}>
+                        <Paper className={classes.root}>
+                            <Grid container alignItems={'center'}>
+                                <Grid item xs={6} className={`${classes.exerciseName} ${classes.exerciseHeader}`}>
+                                    {name}
+                                </Grid>
+                                <Grid item xs={6} className={classes.exerciseProps}>
+                                    {`${sets}x${reps} ${weight}${unit}`}
+                                </Grid>
+                                <Grid container justify={'space-between'}>
+                                {times(sets)( (key, index) =>
+                                    <Fab key={index} onClick={event => this.completeSet(exercise, index)}>
+                                        <span style={{fontSize: '1.5rem'}}>{exercise.setsCompleted[index]}</span>
+                                    </Fab>
+                                )}
+                                </Grid>
                             </Grid>
-                            <Grid item xs={6} className={classes.exerciseProps}>
-                                {`${sets}x${reps} ${weight}${unit}`}
-                            </Grid>
-                            <Grid container justify={'space-between'}>
-                            {times(sets)( (key, index) =>
-                                <Fab key={index} onClick={event => this.completeSet(exercise, index)}>
-                                    <span style={{fontSize: '1.5rem'}}>{exercise.setsCompleted[index]}</span>
-                                </Fab>
-                            )}
-                            </Grid>
-                        </Grid>
-                    </Paper>
-                </Grid>
+                        </Paper>
+                    </Grid>
                 )})
             }
-            <div className={classes.timerContainer}>
-                Great job - time to next set:
-                <Timer className={classes.timer} expiryTimestamp={timeBeforeNextSet} onExpire={this.onExpire} />
-                <audio ref={this.audio} src="/assets/beep-01a.mp3" preload="auto" />
-            </div>
+
+            {showTimer &&
+                <div className={classes.timerContainer}>
+                    Great job - time to next set: {' '}
+                    <Timer className={classes.timer} beepAt={90} key={lastCompletedIndex} />
+                </div>
+            }
 
             </Grid>
+            </>
         );
     }
 }

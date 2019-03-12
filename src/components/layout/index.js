@@ -16,24 +16,24 @@ const styles = {
 const ROUTES = {
   Workouts: '/',
   History: '/history',
-  Settings: '/settings'
+  Settings: '/settings',
+  Workout: '/workout'
 };
 const PAGES = Object.keys(ROUTES);
+function getPageNameFromPath(pathname) {
+  return PAGES.filter(route => ROUTES[route] === pathname)[0];
+}
+
 
 class Layout extends React.Component {
-  constructor(props) {
-    super();
+  static getDerivedStateFromProps(props) {
     const {pathname} = props.history.location;
-    const pageName = this.getPageNameFromPath(pathname);
+    const pageName = getPageNameFromPath(pathname);
 
-    this.state = {
+    return {
       pageName,
       selectedIndex: PAGES.indexOf(pageName)
     };
-  }
-
-  getPageNameFromPath(pathname) {
-    return PAGES.filter(route => ROUTES[route] === pathname)[0];
   }
 
   navClicked = pageName => event => {
@@ -47,19 +47,21 @@ class Layout extends React.Component {
 
   render() {
     const { classes, isAuthed } = this.props;
-    const showFooter = isAuthed && this.state.selectedIndex !== -1;
+    const showLayout = isAuthed && this.state.selectedIndex < 3;
 
-    return (
-      <>
-        <Header pageName={this.state.pageName} />
-        <div style={{ padding: 8 }}>
-        {this.props.children}
-        </div>
-        {showFooter &&
+    if (showLayout) {
+      return (
+        <>
+          <Header pageName={this.state.pageName} />
+          <div style={{ padding: 8 }}>
+            {this.props.children}
+          </div>
           <Footer navClickHandler={this.navClicked} selectedIndex={this.state.selectedIndex} />
-        }
-      </>
-    );
+        </>
+      )
+    }
+    
+    return this.props.children;
   }
 }
 

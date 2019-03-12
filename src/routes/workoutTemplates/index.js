@@ -51,11 +51,11 @@ class Home extends Component {
     };
 
     render() {
-        const { completedWorkouts } = this.context;
+        const { workoutTemplates } = this.context;
 
         return (
             <Grid container spacing={12} alignItems={'center'}>
-            {completedWorkouts.map(this.renderWorkout)}
+            {workoutTemplates.map(this.renderWorkout)}
             </Grid>
         );
     }
