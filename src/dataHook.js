@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import store from 'store';
 
 const workoutTemplates = [
@@ -98,49 +98,29 @@ export const workout = {
 
 const completedWorkouts = [workout];
 
-const AppContext = React.createContext();
+//const AppContext = React.createContext();
 let defaultState = {
     workout,
     completedWorkouts,
     workoutTemplates
 };
 
-export class Data extends React.Component {
-    constructor() {
-        super();
+export default function useData() {
+    const [state, setState] = useState(() => {
         const storedState = store.get('state');
-        this.setContext = newState => {
-            console.log('Setting State: ', newState);
-            this.setState(() => newState);
-        };
-        this.state = storedState || {
-            ...defaultState
-        };
-
-        console.log('Default State: ', this.state);
-    }
-
-    componentWillUnmount() {
-        console.log('Unmount', this.state);
-        store.set('state', this.state);
-    }
-
-    render() {
-        // The entire state is passed to the provider
-        console.log('Rendering Data', this.state);
-        const value = {
-            setContext: this.setContext,
-            ...this.state
-        };
-
         return (
-            <>
-                <AppContext.Provider value={value}>
-                    {this.props.children}
-                </AppContext.Provider>
-            </>
+            storedState || {
+                ...defaultState
+            }
         );
-    }
-}
+    });
 
-export default AppContext;
+    useEffect(() => {
+        return () => store.set('state', state);
+    });
+
+    return {
+        state,
+        setState
+    };
+}

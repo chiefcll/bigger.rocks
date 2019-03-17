@@ -1,44 +1,44 @@
-import React, { Component } from "react";
-import { withStyles } from "@material-ui/core/styles";
-import Paper from "@material-ui/core/Paper";
-import Grid from "@material-ui/core/Grid";
-import Fab from "@material-ui/core/Fab";
-import Button from "@material-ui/core/Button";
-import { Link } from "react-router-dom";
-import AppContext from "../../data";
-import Header from "../../components/header";
-import Timer from "../../components/timer";
+import React, { Component } from 'react';
+import { withStyles } from '@material-ui/core/styles';
+import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
+import Fab from '@material-ui/core/Fab';
+import Button from '@material-ui/core/Button';
+import { Link } from 'react-router-dom';
+import AppContext from '../../data';
+import Header from '../../components/header';
+import Timer from '../../components/timer';
 
 const styles = theme => ({
     root: {
         ...theme.mixins.gutters(),
         margin: theme.spacing.unit,
-        padding: "8px",
+        padding: '8px',
         backgroundColor: theme.palette.background.paper
     },
     exerciseHeader: {
-        paddingTop: "5px",
-        paddingBottom: "5px"
+        paddingTop: '5px',
+        paddingBottom: '5px'
     },
     exerciseName: {
-        textAlign: "left"
+        textAlign: 'left'
     },
     exerciseProps: {
-        textAlign: "right"
+        textAlign: 'right'
     },
     inline: {
-        display: "inline"
+        display: 'inline'
     },
     timer: {
-        display: "inline"
+        display: 'inline'
     },
     timerContainer: {
-        position: "absolute",
+        position: 'absolute',
         bottom: theme.spacing.unit,
         right: 0,
         left: theme.spacing.unit,
-        fontSize: "1.5rem",
-        textAlign: "left"
+        fontSize: '1.5rem',
+        textAlign: 'left'
     }
 });
 
@@ -101,7 +101,7 @@ class Workout extends Component {
 
         if (workoutIsCompleted(workout)) {
             const nextWorkout = getNextWorkout(workoutTemplates, workout);
-            nextWorkout.date = "Next";
+            nextWorkout.date = 'Next';
 
             setContext({
                 workout: nextWorkout,
@@ -120,7 +120,7 @@ class Workout extends Component {
                 <Header pageName="Workout">
                     <Link to="/">
                         <Button
-                            style={{ color: "white" }}
+                            style={{ color: 'white' }}
                             onClick={this.completeWorkout}
                         >
                             Done
@@ -163,7 +163,7 @@ class Workout extends Component {
                                                 >
                                                     <span
                                                         style={{
-                                                            fontSize: "1.5rem"
+                                                            fontSize: '1.5rem'
                                                         }}
                                                     >
                                                         {
@@ -184,7 +184,7 @@ class Workout extends Component {
 
                     {showTimer && (
                         <div className={classes.timerContainer}>
-                            Great job - time to next set:{" "}
+                            Great job - time to next set:{' '}
                             <Timer
                                 className={classes.timer}
                                 beepAt={90}
