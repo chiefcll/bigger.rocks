@@ -3,7 +3,6 @@ import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import { Link } from 'react-router-dom';
-import AppContext from '../../data';
 
 const styles = theme => ({
     root: {
@@ -17,8 +16,6 @@ const styles = theme => ({
 });
 
 class Home extends Component {
-    static contextType = AppContext;
-
     renderWorkout = workout => {
         const { classes } = this.props;
         return (
@@ -53,10 +50,11 @@ class Home extends Component {
     };
 
     render() {
-        const { completedWorkouts } = this.context;
+        const { completedWorkouts, nextWorkout } = this.props;
 
         return (
             <Grid container spacing={16} alignItems={'center'}>
+                {[nextWorkout].map(this.renderWorkout)}
                 {completedWorkouts.map(this.renderWorkout)}
             </Grid>
         );

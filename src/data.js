@@ -1,146 +1,44 @@
-import React from 'react';
 import store from 'store';
+import defaultState from './defaultData';
 
-const workoutTemplates = [
-    {
-        id: 1,
-        name: 'Workout A',
-        exercises: [
-            {
-                name: 'Squat',
-                reps: 5,
-                sets: 5,
-                weight: 110,
-                unit: 'lbs',
-                setsCompleted: []
-            },
-            {
-                name: 'Bench',
-                reps: 5,
-                sets: 5,
-                weight: 160,
-                unit: 'lbs',
-                setsCompleted: []
-            },
-            {
-                name: 'Row',
-                reps: 5,
-                sets: 5,
-                weight: 110,
-                unit: 'lbs',
-                setsCompleted: []
-            }
-        ]
-    },
-    {
-        id: 2,
-        name: 'Workout B',
-        exercises: [
-            {
-                name: 'Squat',
-                reps: 5,
-                sets: 5,
-                weight: 110,
-                unit: 'lbs',
-                setsCompleted: []
-            },
-            {
-                name: 'Overhead Press',
-                reps: 5,
-                sets: 5,
-                weight: 160,
-                unit: 'lbs',
-                setsCompleted: []
-            },
-            {
-                name: 'Deadlifts',
-                reps: 5,
-                sets: 5,
-                weight: 110,
-                unit: 'lbs',
-                setsCompleted: []
-            }
-        ]
-    }
-];
-
-export const workout = {
-    id: 1,
-    date: 'Sat 2 Mar',
-    completed: true,
-    exercises: [
-        {
-            name: 'Squat',
-            reps: 5,
-            sets: 5,
-            weight: 110,
-            unit: 'lbs',
-            setsCompleted: []
-        },
-        {
-            name: 'Bench',
-            reps: 5,
-            sets: 5,
-            weight: 160,
-            unit: 'lbs',
-            setsCompleted: []
-        },
-        {
-            name: 'Row',
-            reps: 5,
-            sets: 5,
-            weight: 110,
-            unit: 'lbs',
-            setsCompleted: []
-        }
-    ]
+const storedState = store.get('state');
+const state = storedState || {
+    ...defaultState
 };
 
-const completedWorkouts = [workout];
+function saveState(state) {
+    store.set('state', state);
+}
 
-const AppContext = React.createContext();
-let defaultState = {
-    workout,
-    completedWorkouts,
-    workoutTemplates
-};
+function workoutIsCompleted(workout) {
+    return workout.exercises.every(e => e.setsCompleted.length === e.sets);
+}
 
-export class Data extends React.Component {
-    constructor() {
-        super();
-        const storedState = store.get('state');
-        this.setContext = newState => {
-            console.log('Setting State: ', newState);
-            this.setState(() => newState);
+function getNextWorkout(templates, workout) {
+    const nextId = workout.id + 1;
+    const nextTemplate =
+        templates.filter(t => t.id === nextId)[0] || templates[0];
+
+    return { ...nextTemplate };
+}
+
+function completeWorkout({ workout, completedWorkouts, workoutTemplates }) {
+    if (workoutIsCompleted(workout)) {
+        const nextWorkout = getNextWorkout(workoutTemplates, workout);
+        nextWorkout.date = 'Next';
+        workout.date = new Date().toDateString();
+
+        return {
+            workout: nextWorkout,
+            completedWorkouts: [workout, ...completedWorkouts]
         };
-        this.state = storedState || {
-            ...defaultState
-        };
-
-        console.log('Default State: ', this.state);
-    }
-
-    componentWillUnmount() {
-        console.log('Unmount', this.state);
-        store.set('state', this.state);
-    }
-
-    render() {
-        // The entire state is passed to the provider
-        console.log('Rendering Data', this.state);
-        const value = {
-            setContext: this.setContext,
-            ...this.state
-        };
-
-        return (
-            <>
-                <AppContext.Provider value={value}>
-                    {this.props.children}
-                </AppContext.Provider>
-            </>
-        );
     }
 }
 
-export default AppContext;
+export default {
+    state,
+    actions: {
+        completeWorkout
+    },
+    saveState
+};

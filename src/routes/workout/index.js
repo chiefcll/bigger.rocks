@@ -5,7 +5,6 @@ import Grid from '@material-ui/core/Grid';
 import Fab from '@material-ui/core/Fab';
 import Button from '@material-ui/core/Button';
 import { Link } from 'react-router-dom';
-import AppContext from '../../data';
 import Header from '../../components/header';
 import Timer from '../../components/timer';
 
@@ -47,73 +46,36 @@ const times = n => f => {
     return loopFor.map(f);
 };
 
-function workoutIsCompleted(workout) {
-    return workout.exercises.every(e => e.setsCompleted.length === e.sets);
-}
-
-function getNextWorkout(templates, workout) {
-    const nextId = workout.id + 1;
-    const nextTemplate =
-        templates.filter(t => t.id === nextId)[0] || templates[0];
-
-    return { ...nextTemplate };
-}
-
 class Workout extends Component {
-    static contextType = AppContext;
-
-    state = {
-        showTimer: false
-    };
+    constructor(props) {
+        super(props);
+        this.state = { showTimer: false, ...props };
+    }
 
     completeSet = (exercise, index) => {
-        const { workout, setContext } = this.context;
-        let repsCompleted = exercise.setsCompleted[index];
+        this.setState(({ workout }) => {
+            let repsCompleted = exercise.setsCompleted[index];
 
-        if (repsCompleted) {
-            repsCompleted -= 1;
-        } else {
-            repsCompleted = exercise.reps;
-        }
-        exercise.setsCompleted[index] = repsCompleted;
-
-        setContext({
-            workout: {
-                ...workout
+            if (repsCompleted) {
+                repsCompleted -= 1;
+            } else {
+                repsCompleted = exercise.reps;
             }
-        });
+            exercise.setsCompleted[index] = repsCompleted;
 
-        this.setState(() => {
             return {
                 lastCompletedIndex: index,
-                showTimer: true
+                showTimer: true,
+                workout: {
+                    ...workout
+                }
             };
         });
     };
 
-    completeWorkout = () => {
-        const {
-            workout,
-            completedWorkouts,
-            workoutTemplates,
-            setContext
-        } = this.context;
-
-        if (workoutIsCompleted(workout)) {
-            const nextWorkout = getNextWorkout(workoutTemplates, workout);
-            nextWorkout.date = 'Next';
-
-            setContext({
-                workout: nextWorkout,
-                completedWorkouts: [workout, ...completedWorkouts]
-            });
-        }
-    };
-
     render() {
-        const { classes } = this.props;
-        const { showTimer, lastCompletedIndex } = this.state;
-        const { workout } = this.context;
+        const { classes, completeWorkout } = this.props;
+        const { workout, showTimer, lastCompletedIndex } = this.state;
 
         return (
             <>
@@ -121,7 +83,7 @@ class Workout extends Component {
                     <Link to="/">
                         <Button
                             style={{ color: 'white' }}
-                            onClick={this.completeWorkout}
+                            onClick={() => completeWorkout(workout)}
                         >
                             Done
                         </Button>
