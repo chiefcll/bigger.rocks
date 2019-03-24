@@ -1,5 +1,6 @@
 import store from 'store';
 import defaultState from './defaultData';
+import settings from './settings';
 
 const storedState = store.get('state');
 const state = storedState || {
@@ -8,6 +9,10 @@ const state = storedState || {
 
 function saveState(state) {
     store.set('state', state);
+}
+
+function _resetState() {
+    store.set('state', { ...defaultState });
 }
 
 function workoutIsCompleted(workout) {
@@ -22,17 +27,51 @@ function getNextWorkout(templates, workout) {
     return { ...nextTemplate };
 }
 
+function updateWeightForNextWorkout({
+    workoutTemplates,
+    workout,
+    incrementWeightBy
+}) {
+    const currentTemplate =
+        workoutTemplates.filter(t => t.id === workout.id)[0] ||
+        workoutTemplates[0];
+
+    currentTemplate.exercises.forEach(e => {
+        if (exerciseCompletedAllReps(e)) {
+            console.log(e.setsCompleted);
+            e.weight = e.weight + incrementWeightBy;
+        }
+    });
+
+    return workoutTemplates;
+}
+
+function exerciseCompletedAllReps(exercise) {
+    const { reps } = exercise;
+    return exercise.setsCompleted.every(set => set === reps);
+}
+
 function completeWorkout({ workout, completedWorkouts, workoutTemplates }) {
     if (workoutIsCompleted(workout)) {
+        workout.date = new Date().toDateString();
+
+        workoutTemplates = updateWeightForNextWorkout({
+            workoutTemplates,
+            workout,
+            incrementWeightBy: settings.incrementWeightBy
+        });
+
         const nextWorkout = getNextWorkout(workoutTemplates, workout);
         nextWorkout.date = 'Next';
-        workout.date = new Date().toDateString();
 
         return {
             workout: nextWorkout,
-            completedWorkouts: [workout, ...completedWorkouts]
+            completedWorkouts: [workout, ...completedWorkouts],
+            workoutTemplates
         };
     }
+
+    return false;
 }
 
 export default {
@@ -40,5 +79,6 @@ export default {
     actions: {
         completeWorkout
     },
-    saveState
+    saveState,
+    _resetState
 };

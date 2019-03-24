@@ -37,6 +37,7 @@ class App extends Component {
     render() {
         let { isAuthed, workout, completedWorkouts } = this.state;
         data.saveState(this.state);
+        data._resetState();
         return (
             <div className="App">
                 <CssBaseline />

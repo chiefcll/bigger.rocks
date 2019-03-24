@@ -19,17 +19,17 @@ class Home extends Component {
     renderWorkout = workout => {
         const { classes } = this.props;
         return (
-            <Grid item xs={12}>
+            <Grid item xs={12} key={workout.date}>
                 <Link to="/workout">
                     <Paper className={classes.root}>
-                        <Grid container xs={12} alignItems={'center'}>
+                        <Grid container alignItems={'center'}>
                             <Grid item xs={4}>
                                 {workout.date}
                             </Grid>
                             <Grid item container xs={8}>
                                 {workout.exercises.map(e => {
                                     return (
-                                        <>
+                                        <React.Fragment key={e.name}>
                                             <Grid item xs={6}>
                                                 {e.name}
                                             </Grid>
@@ -38,7 +38,7 @@ class Home extends Component {
                                                     e.weight
                                                 }${e.unit}`}
                                             </Grid>
-                                        </>
+                                        </React.Fragment>
                                     );
                                 })}
                             </Grid>

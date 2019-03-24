@@ -63,8 +63,8 @@ const workoutTemplates = [
 
 const workout = {
     id: 1,
-    date: 'Sat 2 Mar',
-    completed: true,
+    date: 'Next',
+    name: 'Workout A',
     exercises: [
         {
             name: 'Squat',
@@ -92,7 +92,20 @@ const workout = {
         }
     ]
 };
-const completedWorkouts = [workout];
+
+let completedWorkout = {
+    date: 'Sat Mar 23 2019',
+    ...workoutTemplates[1]
+};
+
+completedWorkout.exercises.forEach(e => {
+    const { reps, sets } = e;
+    for (let i = 0; i < sets; i++) {
+        e.setsCompleted.push(reps);
+    }
+});
+
+const completedWorkouts = [completedWorkout];
 
 export default {
     workout,
