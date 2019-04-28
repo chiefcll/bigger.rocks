@@ -92,6 +92,8 @@ class Workout extends Component {
                 <Grid container spacing={0} alignItems="center">
                     {workout.exercises.map(exercise => {
                         const { name, sets, reps, weight, unit } = exercise;
+                        const barWeight = 45;
+                        const weightPerSide = (weight - barWeight) / 2;
                         return (
                             <Grid key={name} item xs={12}>
                                 <Paper className={classes.root}>
@@ -110,7 +112,7 @@ class Workout extends Component {
                                             xs={6}
                                             className={classes.exerciseProps}
                                         >
-                                            {`${sets}x${reps} ${weight}${unit}`}
+                                            {`${sets}x${reps} ${weight}${unit} - ${weightPerSide}${unit}`}
                                         </Grid>
                                         <Grid container justify="space-between">
                                             {times(sets)((key, index) => (

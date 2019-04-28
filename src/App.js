@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import SignIn from './routes/signin';
 import Home from './routes/home';
 import Workout from './routes/workout';
+import ExerciseWeight from './routes/exerciseWeight';
 import History from './routes/history';
 import Settings from './routes/settings';
 import NotFound from './routes/notfound';
@@ -35,7 +36,7 @@ class App extends Component {
     };
 
     render() {
-        let { isAuthed, workout, completedWorkouts } = this.state;
+        const { isAuthed, workout, completedWorkouts, exerciseWeight, settings } = this.state;
         data.saveState(this.state);
         data._resetState();
         return (
@@ -66,6 +67,16 @@ class App extends Component {
                                             completeWorkout={
                                                 this.onCompleteWorkout
                                             }
+                                        />
+                                    )}
+                                />
+                                <Route
+                                    path="/exerciseWeight"
+                                    exact
+                                    render={() => (
+                                        <ExerciseWeight
+                                            exerciseWeight={exerciseWeight}
+                                            settings={settings}
                                         />
                                     )}
                                 />

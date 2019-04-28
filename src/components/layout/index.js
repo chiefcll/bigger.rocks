@@ -17,7 +17,8 @@ const ROUTES = {
     Workouts: '/',
     History: '/history',
     Settings: '/settings',
-    Workout: '/workout'
+    Workout: '/workout',
+    'Exercise Weight': '/exerciseWeight'
 };
 const PAGES = Object.keys(ROUTES);
 function getPageNameFromPath(pathname) {

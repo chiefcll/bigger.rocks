@@ -1,18 +1,18 @@
 import store from 'store';
 import defaultState from './defaultData';
-import settings from './settings';
+const {storageKey} = defaultState.settings;
 
-const storedState = store.get('state');
+const storedState = store.get(storageKey);
 const state = storedState || {
     ...defaultState
 };
 
 function saveState(state) {
-    store.set('state', state);
+    store.set(storageKey, state);
 }
 
 function _resetState() {
-    store.set('state', { ...defaultState });
+    store.set(storageKey, { ...defaultState });
 }
 
 function workoutIsCompleted(workout) {
@@ -30,17 +30,22 @@ function getNextWorkout(templates, workout) {
 function updateWeightForNextWorkout({
     workoutTemplates,
     workout,
+    exerciseWeight,
     incrementWeightBy
 }) {
     const currentTemplate =
         workoutTemplates.filter(t => t.id === workout.id)[0] ||
         workoutTemplates[0];
+        
+
+    workout.exercises.forEach((e, index) => {
+        if (exerciseCompletedAllReps(e)) {
+            exerciseWeight[e.name].weight = e.weight + incrementWeightBy;
+        }
+    });
 
     currentTemplate.exercises.forEach(e => {
-        if (exerciseCompletedAllReps(e)) {
-            console.log(e.setsCompleted);
-            e.weight = e.weight + incrementWeightBy;
-        }
+        e.weight = exerciseWeight[e.name].weight;
     });
 
     return workoutTemplates;
@@ -51,12 +56,19 @@ function exerciseCompletedAllReps(exercise) {
     return exercise.setsCompleted.every(set => set === reps);
 }
 
-function completeWorkout({ workout, completedWorkouts, workoutTemplates }) {
+function completeWorkout({ 
+        workout, 
+        completedWorkouts,
+        workoutTemplates,
+        exerciseWeight,
+        settings }) {
+    
     if (workoutIsCompleted(workout)) {
         workout.date = new Date().toDateString();
 
         workoutTemplates = updateWeightForNextWorkout({
             workoutTemplates,
+            exerciseWeight,
             workout,
             incrementWeightBy: settings.incrementWeightBy
         });
@@ -65,6 +77,7 @@ function completeWorkout({ workout, completedWorkouts, workoutTemplates }) {
         nextWorkout.date = 'Next';
 
         return {
+            exerciseWeight,
             workout: nextWorkout,
             completedWorkouts: [workout, ...completedWorkouts],
             workoutTemplates

@@ -29,6 +29,7 @@ function getStateAfterCompletedWorkout(state) {
     let completedWorkouts = [workout, ...state.completedWorkouts];
 
     return {
+        ...state,
         workout: nextWorkout,
         completedWorkouts,
         workoutTemplates
