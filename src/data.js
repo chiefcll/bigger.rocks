@@ -1,143 +1,97 @@
-import React from 'react';
-import SimpleStorage, {resetParentState} from 'react-simple-storage';
+import store from 'store';
+import defaultState from './defaultData';
+const {storageKey} = defaultState.settings;
 
-const workoutTemplates = [
-    {
-        id: 1,
-        name: 'Workout A',
-        exercises: [
-            {
-                name: 'Squat',
-                reps: 5,
-                sets: 5,
-                weight: 110,
-                unit: 'lbs',
-                setsCompleted: []
-            },
-            {
-                name: 'Bench',
-                reps: 5,
-                sets: 5,
-                weight: 160,
-                unit: 'lbs',
-                setsCompleted: []
-            },
-            {
-                name: 'Row',
-                reps: 5,
-                sets: 5,
-                weight: 110,
-                unit: 'lbs',
-                setsCompleted: []
-            }
-        ]
-    },
-    {
-        id: 2,
-        name: 'Workout B',
-        exercises: [
-            {
-                name: 'Squat',
-                reps: 5,
-                sets: 5,
-                weight: 110,
-                unit: 'lbs',
-                setsCompleted: []
-            },
-            {
-                name: 'Overhead Press',
-                reps: 5,
-                sets: 5,
-                weight: 160,
-                unit: 'lbs',
-                setsCompleted: []
-            },
-            {
-                name: 'Deadlifts',
-                reps: 5,
-                sets: 5,
-                weight: 110,
-                unit: 'lbs',
-                setsCompleted: []
-            }
-        ]
-    }
-]
+const storedState = store.get(storageKey);
+const state = storedState || {
+    ...defaultState
+};
 
-export const workout =
-    {
-        id: 1,
-        date: 'Sat 2 Mar',
-        completed: true,
-        exercises: [
-            {
-                name: 'Squat',
-                reps: 5,
-                sets: 5,
-                weight: 110,
-                unit: 'lbs',
-                setsCompleted: []
-            },
-            {
-                name: 'Bench',
-                reps: 5,
-                sets: 5,
-                weight: 160,
-                unit: 'lbs',
-                setsCompleted: []
-            },
-            {
-                name: 'Row',
-                reps: 5,
-                sets: 5,
-                weight: 110,
-                unit: 'lbs',
-                setsCompleted: []
-            }
-        ]
-    };
+function saveState(state) {
+    store.set(storageKey, state);
+}
 
-const completedWorkouts = [
-    workout
-]
-    
-const AppContext = React.createContext();
-let defaultState = {
+function _resetState() {
+    store.set(storageKey, { ...defaultState });
+}
+
+function workoutIsCompleted(workout) {
+    return workout.exercises.every(e => e.setsCompleted.length === e.sets);
+}
+
+function getNextWorkout(templates, workout) {
+    const nextId = workout.id + 1;
+    const nextTemplate =
+        templates.filter(t => t.id === nextId)[0] || templates[0];
+
+    return { ...nextTemplate };
+}
+
+function updateWeightForNextWorkout({
+    workoutTemplates,
     workout,
-    completedWorkouts,
-    workoutTemplates
+    exerciseWeight,
+    incrementWeightBy
+}) {
+    const currentTemplate =
+        workoutTemplates.filter(t => t.id === workout.id)[0] ||
+        workoutTemplates[0];
+        
+
+    workout.exercises.forEach((e, index) => {
+        if (exerciseCompletedAllReps(e)) {
+            exerciseWeight[e.name].weight = e.weight + incrementWeightBy;
+        }
+    });
+
+    currentTemplate.exercises.forEach(e => {
+        e.weight = exerciseWeight[e.name].weight;
+    });
+
+    return workoutTemplates;
 }
 
-export class Data extends React.Component {
-    state = {
-        ...defaultState
-        //resetState: true,
-    };
+function exerciseCompletedAllReps(exercise) {
+    const { reps } = exercise;
+    return exercise.setsCompleted.every(set => set === reps);
+}
 
-    setContext = this.setState.bind(this)
+function completeWorkout({ 
+        workout, 
+        completedWorkouts,
+        workoutTemplates,
+        exerciseWeight,
+        settings }) {
+    
+    if (workoutIsCompleted(workout)) {
+        workout.date = new Date().toDateString();
 
-    render() {
-        // The entire state is passed to the provider
-        const value = {
-            setContext: this.setContext,
-            ...this.state
-        }
+        workoutTemplates = updateWeightForNextWorkout({
+            workoutTemplates,
+            exerciseWeight,
+            workout,
+            incrementWeightBy: settings.incrementWeightBy
+        });
 
-        if (this.state.resetState) {
-            resetParentState(this, { ...defaultState, resetState: false});
-        }
+        const nextWorkout = getNextWorkout(workoutTemplates, workout);
+        nextWorkout.date = 'Next';
 
-        return (
-            <>
-                <SimpleStorage
-                    parent={this}
-                />
-                <AppContext.Provider value={value}>
-                    {this.props.children}
-                </AppContext.Provider>
-            </>
-        );
+        return {
+            exerciseWeight,
+            workout: nextWorkout,
+            completedWorkouts: [workout, ...completedWorkouts],
+            workoutTemplates
+        };
     }
+
+    return false;
 }
 
-export default AppContext;
+export default {
+    state,
+    actions: {
+        completeWorkout
+    },
+    saveState,
+    _resetState
+};
