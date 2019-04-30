@@ -50,11 +50,11 @@ class ExerciseWeight extends Component {
             }
             exerciseWeight[exerciseName] = exercise;
             return exerciseWeight;
-        })
+        });
     }
 
     render() {
-        const { classes } = this.props;
+        const { classes, saveExerciseWeight } = this.props;
         const { exerciseWeight, settings } = this.state;
         const { incrementWeightBy } = settings;
 
@@ -64,7 +64,7 @@ class ExerciseWeight extends Component {
                     <Link to="/">
                         <Button
                             style={{ color: 'white' }}
-                            onClick={() => {}}
+                            onClick={() => saveExerciseWeight(exerciseWeight)}
                         >
                             Done
                         </Button>

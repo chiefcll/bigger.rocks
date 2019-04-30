@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -22,12 +22,13 @@ const styles = {
 };
 
 function ButtonAppBar(props) {
+  const [isDrawerOpen, setDrawerOpen] = useState(false);
   const { classes, pageName } = props;
   return (
     <div className={classes.root}>
       <AppBar position="static">
         <Toolbar>
-          <IconButton onClick={openDrawer} className={classes.menuButton} color="inherit" aria-label="Menu">
+          <IconButton onClick={() => setDrawerOpen(true)} className={classes.menuButton} color="inherit" aria-label="Menu">
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" color="inherit" className={classes.grow}>
@@ -36,7 +37,7 @@ function ButtonAppBar(props) {
           {props.children}
         </Toolbar>
       </AppBar>
-      <Drawer open={drawerOpen}></Drawer>
+      <Drawer open={isDrawerOpen} onClose={() => setDrawerOpen(false)}></Drawer>
     </div>
   );
 }

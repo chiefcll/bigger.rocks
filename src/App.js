@@ -35,6 +35,15 @@ class App extends Component {
         );
     };
 
+    onUpdateExerciseWeight = exerciseWeight => {
+        this.setState(state =>
+            data.actions.updateExerciseWeight({
+                ...state,
+                exerciseWeight
+            })
+        );
+    };
+
     render() {
         const { isAuthed, workout, completedWorkouts, exerciseWeight, settings } = this.state;
         data.saveState(this.state);
@@ -77,6 +86,7 @@ class App extends Component {
                                         <ExerciseWeight
                                             exerciseWeight={exerciseWeight}
                                             settings={settings}
+                                            saveExerciseWeight={this.onUpdateExerciseWeight}
                                         />
                                     )}
                                 />
