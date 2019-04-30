@@ -3,12 +3,11 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
-import Divider from '@material-ui/core/Divider';
+import { Link } from 'react-router-dom';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
+import FitnessCenterIcon from '@material-ui/icons/FitnessCenter';
 
 const styles = {
   list: {
@@ -20,52 +19,29 @@ const styles = {
 };
 
 class AppDrawer extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      ...props
-    };
-  }
-
-  close = () => {
-    this.setState({
-      open: false,
-    });
-  };
-
   render() {
     const { classes } = this.props;
-    const { open } = this.state;
 
     const sideList = (
       <div className={classes.list}>
         <List>
-          {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-              <ListItemText primary={text} />
+          <Link to="/exerciseWeight">
+            <ListItem button>
+              <ListItemIcon><FitnessCenterIcon/></ListItemIcon>
+              <ListItemText primary="Exercise Weight" />
             </ListItem>
-          ))}
-        </List>
-        <Divider />
-        <List>
-          {['All mail', 'Trash', 'Spam'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
+          </Link>
         </List>
       </div>
     );
 
     return (
-      <Drawer open={this.state.open} onClose={this.close}>
+      <Drawer open={this.props.open} onClose={this.props.onClose}>
         <div
           tabIndex={0}
           role="button"
-          onClick={this.close}
-          onKeyDown={this.close}
+          onClick={this.props.onClose}
+          onKeyDown={this.props.onClose}
         >
           {sideList}
         </div>

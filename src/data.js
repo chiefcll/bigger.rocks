@@ -56,6 +56,26 @@ function exerciseCompletedAllReps(exercise) {
     return exercise.setsCompleted.every(set => set === reps);
 }
 
+function updateExerciseWeight({ 
+    workout, 
+    workoutTemplates,
+    exerciseWeight}) {
+        const updateWeight = exercise => {
+            return {
+                ...exercise,
+                weight: exerciseWeight[exercise.name].weight
+            };
+        }
+
+        workout.exercises = workout.exercises.map(updateWeight);
+
+        workoutTemplates.forEach(workoutTemplate => {
+            workoutTemplate.exercises = workoutTemplate.exercises.map(updateWeight);
+        })
+
+        return workout;
+    }
+
 function completeWorkout({ 
         workout, 
         completedWorkouts,
@@ -90,7 +110,8 @@ function completeWorkout({
 export default {
     state,
     actions: {
-        completeWorkout
+        completeWorkout,
+        updateExerciseWeight
     },
     saveState,
     _resetState
