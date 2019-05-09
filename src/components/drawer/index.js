@@ -10,48 +10,58 @@ import ListItemText from '@material-ui/core/ListItemText';
 import FitnessCenterIcon from '@material-ui/icons/FitnessCenter';
 
 const styles = {
-  list: {
-    width: 250,
-  },
-  fullList: {
-    width: 'auto',
-  },
+    list: {
+        width: 250
+    },
+    fullList: {
+        width: 'auto'
+    }
 };
 
 class AppDrawer extends React.Component {
-  render() {
-    const { classes } = this.props;
+    render() {
+        const { classes } = this.props;
 
-    const sideList = (
-      <div className={classes.list}>
-        <List>
-          <Link to="/exerciseWeight">
-            <ListItem button>
-              <ListItemIcon><FitnessCenterIcon/></ListItemIcon>
-              <ListItemText primary="Exercise Weight" />
-            </ListItem>
-          </Link>
-        </List>
-      </div>
-    );
+        const sideList = (
+            <div className={classes.list}>
+                <List>
+                    <Link to="/exerciseWeight">
+                        <ListItem button>
+                            <ListItemIcon>
+                                <FitnessCenterIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Exercise Weight" />
+                        </ListItem>
+                    </Link>
+                    <Link to="/workoutTemplates">
+                        <ListItem button>
+                            <ListItemIcon>
+                                <FitnessCenterIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Workout Templates" />
+                        </ListItem>
+                    </Link>
+                </List>
+            </div>
+        );
 
-    return (
-      <Drawer open={this.props.open} onClose={this.props.onClose}>
-        <div
-          tabIndex={0}
-          role="button"
-          onClick={this.props.onClose}
-          onKeyDown={this.props.onClose}
-        >
-          {sideList}
-        </div>
-      </Drawer>
-    );
-  }
+        return (
+            <Drawer open={this.props.open} onClose={this.props.onClose}>
+                <div
+                    tabIndex={0}
+                    role="button"
+                    onClick={this.props.onClose}
+                    onKeyDown={this.props.onClose}
+                >
+                    {sideList}
+                </div>
+            </Drawer>
+        );
+    }
 }
 
 AppDrawer.propTypes = {
-  classes: PropTypes.object.isRequired,
+    classes: PropTypes.object.isRequired
 };
 
 export default withStyles(styles)(AppDrawer);

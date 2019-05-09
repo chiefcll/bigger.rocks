@@ -4,6 +4,8 @@ import SignIn from './routes/signin';
 import Home from './routes/home';
 import Workout from './routes/workout';
 import ExerciseWeight from './routes/exerciseWeight';
+import WorkoutTemplates from './routes/workoutTemplates';
+import EditWorkoutTemplate from './routes/editWorkoutTemplate';
 import History from './routes/history';
 import Settings from './routes/settings';
 import NotFound from './routes/notfound';
@@ -35,6 +37,15 @@ class App extends Component {
         );
     };
 
+    updateAppState = newState => {
+        this.setState(state => {
+            return {
+                ...state,
+                ...newState
+            };
+        });
+    };
+
     onUpdateExerciseWeight = exerciseWeight => {
         this.setState(state =>
             data.actions.updateExerciseWeight({
@@ -45,7 +56,14 @@ class App extends Component {
     };
 
     render() {
-        const { isAuthed, workout, completedWorkouts, exerciseWeight, settings } = this.state;
+        const {
+            isAuthed,
+            workout,
+            workoutTemplates,
+            completedWorkouts,
+            exerciseWeight,
+            settings
+        } = this.state;
         data.saveState(this.state);
         data._resetState();
         return (
@@ -86,7 +104,30 @@ class App extends Component {
                                         <ExerciseWeight
                                             exerciseWeight={exerciseWeight}
                                             settings={settings}
-                                            saveExerciseWeight={this.onUpdateExerciseWeight}
+                                            saveExerciseWeight={
+                                                this.onUpdateExerciseWeight
+                                            }
+                                        />
+                                    )}
+                                />
+                                <Route
+                                    path="/workoutTemplates"
+                                    exact
+                                    render={() => (
+                                        <WorkoutTemplates
+                                            workoutTemplates={workoutTemplates}
+                                            updateAppState={this.updateAppState}
+                                        />
+                                    )}
+                                />
+                                <Route
+                                    path="/editWorkoutTemplate/:id"
+                                    exact
+                                    render={params => (
+                                        <EditWorkoutTemplate
+                                            workoutTemplates={workoutTemplates}
+                                            updateAppState={this.updateAppState}
+                                            {...params}
                                         />
                                     )}
                                 />
