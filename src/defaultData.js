@@ -94,25 +94,25 @@ const workout = {
 };
 
 const exerciseWeight = {
-    'Squat': {
+    Squat: {
         weight: 110,
-        unit: 'lbs',
+        unit: 'lbs'
     },
-    'Row': {
+    Row: {
         weight: 110,
-        unit: 'lbs',
+        unit: 'lbs'
     },
-    'Bench': {
+    Bench: {
         weight: 160,
-        unit: 'lbs',
+        unit: 'lbs'
     },
     'Overhead Press': {
         weight: 100,
-        unit: 'lbs',
+        unit: 'lbs'
     },
-    'Deadlifts': {
+    Deadlifts: {
         weight: 220,
-        unit: 'lbs',
+        unit: 'lbs'
     }
 };
 
@@ -143,4 +143,17 @@ export default {
     workoutTemplates,
     exerciseWeight,
     settings
+};
+
+export const defaultWorkoutTemplate = {
+    name: 'Workout Name',
+    exercises: [
+        {
+            name: 'Squat',
+            reps: 5,
+            sets: 5,
+            weight: 110,
+            unit: 'lbs'
+        }
+    ]
 };

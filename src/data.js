@@ -1,6 +1,6 @@
 import store from 'store';
 import defaultState from './defaultData';
-const {storageKey} = defaultState.settings;
+const { storageKey } = defaultState.settings;
 
 const storedState = store.get(storageKey);
 const state = storedState || {
@@ -36,7 +36,6 @@ function updateWeightForNextWorkout({
     const currentTemplate =
         workoutTemplates.filter(t => t.id === workout.id)[0] ||
         workoutTemplates[0];
-        
 
     workout.exercises.forEach((e, index) => {
         if (exerciseCompletedAllReps(e)) {
@@ -56,33 +55,30 @@ function exerciseCompletedAllReps(exercise) {
     return exercise.setsCompleted.every(set => set === reps);
 }
 
-function updateExerciseWeight({ 
-    workout, 
+function updateExerciseWeight({ workout, workoutTemplates, exerciseWeight }) {
+    const updateWeight = exercise => {
+        return {
+            ...exercise,
+            weight: exerciseWeight[exercise.name].weight
+        };
+    };
+
+    workout.exercises = workout.exercises.map(updateWeight);
+
+    workoutTemplates.forEach(workoutTemplate => {
+        workoutTemplate.exercises = workoutTemplate.exercises.map(updateWeight);
+    });
+
+    return workout;
+}
+
+function completeWorkout({
+    workout,
+    completedWorkouts,
     workoutTemplates,
-    exerciseWeight}) {
-        const updateWeight = exercise => {
-            return {
-                ...exercise,
-                weight: exerciseWeight[exercise.name].weight
-            };
-        }
-
-        workout.exercises = workout.exercises.map(updateWeight);
-
-        workoutTemplates.forEach(workoutTemplate => {
-            workoutTemplate.exercises = workoutTemplate.exercises.map(updateWeight);
-        })
-
-        return workout;
-    }
-
-function completeWorkout({ 
-        workout, 
-        completedWorkouts,
-        workoutTemplates,
-        exerciseWeight,
-        settings }) {
-    
+    exerciseWeight,
+    settings
+}) {
     if (workoutIsCompleted(workout)) {
         workout.date = new Date().toDateString();
 

@@ -19,7 +19,20 @@ const styles = theme => ({
     }
 });
 
-function saveWorkoutTemplate(template) {}
+function handleChange({ set, template, key, event, index }) {
+    if (index === undefined) {
+        template[key] = event.target.value;
+    } else {
+        template.exercises[index][key] = event.target.value;
+    }
+    set({
+        ...template
+    });
+}
+
+function getWorkoutTemplate(workoutTemplates, id) {
+    return workoutTemplates.filter(wt => wt.id === id)[0];
+}
 
 function EditWorkoutTemplate({
     workoutTemplates,
@@ -27,8 +40,10 @@ function EditWorkoutTemplate({
     updateAppState,
     match
 }) {
-    const id = match.params.id;
-    const [template] = useState(workoutTemplates[id]);
+    const id = parseInt(match.params.id);
+    const [template, setTemplate] = useState(
+        getWorkoutTemplate(workoutTemplates, id)
+    );
 
     return (
         <>
@@ -36,7 +51,13 @@ function EditWorkoutTemplate({
                 <Link to="/">
                     <Button
                         style={{ color: 'white' }}
-                        onClick={() => saveWorkoutTemplate(template)}
+                        onClick={() => {
+                            let wt = getWorkoutTemplate(workoutTemplates, id);
+                            wt = template;
+                            updateAppState({
+                                workoutTemplates: [...workoutTemplates]
+                            });
+                        }}
                     >
                         Done
                     </Button>
@@ -45,41 +66,114 @@ function EditWorkoutTemplate({
             <Grid container spacing={12} alignItems={'center'}>
                 <Grid item xs={12}>
                     <Paper className={classes.root}>
-                        <TextField
-                            label="Template Name"
-                            defaultValue={template.name}
-                            className={classes.textField}
-                            margin="normal"
-                            variant="filled"
-                        />
-                        Exercises
-                        {template.exercises.map(e => {
-                            return (
-                                <>
-                                    <TextField
-                                        label="Exercise Name"
-                                        defaultValue={e.name}
-                                        className={classes.textField}
-                                        margin="normal"
-                                        variant="filled"
-                                    />
-                                    <TextField
-                                        label="Sets"
-                                        defaultValue={e.sets}
-                                        className={classes.textField}
-                                        margin="normal"
-                                        variant="filled"
-                                    />
-                                    <TextField
-                                        label="Weight"
-                                        defaultValue={e.weight}
-                                        className={classes.textField}
-                                        margin="normal"
-                                        variant="filled"
-                                    />
-                                </>
-                            );
-                        })}
+                        <form>
+                            <TextField
+                                label="Template Name"
+                                value={template.name}
+                                onChange={event =>
+                                    handleChange({
+                                        event,
+                                        set: setTemplate,
+                                        template,
+                                        key: 'name'
+                                    })
+                                }
+                                className={classes.textField}
+                                margin="normal"
+                                variant="filled"
+                            />
+
+                            <h3>
+                                Exercises
+                                <Button
+                                    style={{ color: 'white' }}
+                                    onClick={() => {
+                                        template.exercises.push({
+                                            name: 'New',
+                                            sets: '5',
+                                            reps: '5',
+                                            weight: '100'
+                                        });
+
+                                        setTemplate({
+                                            ...template
+                                        });
+                                    }}
+                                >
+                                    Add
+                                </Button>
+                            </h3>
+                            {template.exercises.map((e, i) => {
+                                return (
+                                    <fieldset>
+                                        <TextField
+                                            label="Exercise Name"
+                                            value={e.name}
+                                            onChange={event =>
+                                                handleChange({
+                                                    event,
+                                                    set: setTemplate,
+                                                    template,
+                                                    key: 'name',
+                                                    index: i
+                                                })
+                                            }
+                                            className={classes.textField}
+                                            margin="normal"
+                                            variant="filled"
+                                        />
+                                        <TextField
+                                            label="Sets"
+                                            value={e.sets}
+                                            onChange={event =>
+                                                handleChange({
+                                                    event,
+                                                    set: setTemplate,
+                                                    template,
+                                                    key: 'sets',
+                                                    index: i
+                                                })
+                                            }
+                                            className={classes.textField}
+                                            margin="normal"
+                                            variant="filled"
+                                        />
+                                        <TextField
+                                            label="Reps"
+                                            value={e.reps}
+                                            onChange={event =>
+                                                handleChange({
+                                                    event,
+                                                    set: setTemplate,
+                                                    template,
+                                                    key: 'reps',
+                                                    index: i
+                                                })
+                                            }
+                                            className={classes.textField}
+                                            margin="normal"
+                                            variant="filled"
+                                        />
+                                        <TextField
+                                            label="Weight"
+                                            value={e.weight}
+                                            onChange={event =>
+                                                handleChange({
+                                                    event,
+                                                    set: setTemplate,
+                                                    template,
+                                                    key: 'weight',
+                                                    index: i
+                                                })
+                                            }
+                                            className={classes.textField}
+                                            margin="normal"
+                                            variant="filled"
+                                        />
+                                    </fieldset>
+                                );
+                            })}
+                        </form>
                     </Paper>
                 </Grid>
             </Grid>

@@ -3,6 +3,9 @@ import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import { Link } from 'react-router-dom';
+import Header from '../../components/header';
+import Button from '@material-ui/core/Button';
+import { defaultWorkoutTemplate } from '../../defaultData';
 
 const styles = theme => ({
     root: {
@@ -48,10 +51,37 @@ function renderTemplate(template, classes) {
 }
 
 function WorkoutTemplates({ workoutTemplates, updateAppState }) {
+    const lastId = workoutTemplates[workoutTemplates.length - 1].id;
+    const nextWorkoutId = lastId + 1;
+
     return (
-        <Grid container spacing={12} alignItems={'center'}>
-            {workoutTemplates.map(renderTemplate)}
-        </Grid>
+        <>
+            <Header pageName="Exercise Weight">
+                <Link to={`/editWorkoutTemplate/${nextWorkoutId}`}>
+                    <Button
+                        style={{ color: 'white' }}
+                        onClick={() => {
+                            const newWorkoutTemplate = {
+                                ...defaultWorkoutTemplate
+                            };
+                            newWorkoutTemplate.id = nextWorkoutId;
+
+                            updateAppState({
+                                workoutTemplates: [
+                                    ...workoutTemplates,
+                                    newWorkoutTemplate
+                                ]
+                            });
+                        }}
+                    >
+                        Add
+                    </Button>
+                </Link>
+            </Header>
+            <Grid container spacing={12} alignItems={'center'}>
+                {workoutTemplates.map(renderTemplate)}
+            </Grid>
+        </>
     );
 }
 

@@ -65,7 +65,7 @@ class App extends Component {
             settings
         } = this.state;
         data.saveState(this.state);
-        data._resetState();
+        //data._resetState();
         return (
             <div className="App">
                 <CssBaseline />
