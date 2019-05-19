@@ -73,8 +73,27 @@ class Workout extends Component {
         });
     };
 
+    workoutIsComplete(workout) {
+        return workout.exercises.every(e => e.setsCompleted.length === e.sets);
+    }
+
+    completeWorkout(actions, workout) {
+        actions.updateAppState(state => {
+            let updatedState = actions.completeWorkout({
+                ...state,
+                ...workout
+            });
+
+            if (updatedState) {
+                return updatedState;
+            }
+
+            return state;
+        });
+    }
+
     render() {
-        const { classes, completeWorkout } = this.props;
+        const { classes, actions, dispatch, exerciseWeight } = this.props;
         const { workout, showTimer, lastCompletedIndex } = this.state;
 
         return (
@@ -83,7 +102,15 @@ class Workout extends Component {
                     <Link to="/">
                         <Button
                             style={{ color: 'white' }}
-                            onClick={() => completeWorkout(workout)}
+                            onClick={() => {
+                                if (this.workoutIsComplete(workout)) {
+                                    dispatch({
+                                        type: 'WORKOUT_COMPLETED',
+                                        workout
+                                    });
+                                    //dispatch(actions.completeWorkout(workout));
+                                }
+                            }}
                         >
                             Done
                         </Button>
@@ -91,7 +118,8 @@ class Workout extends Component {
                 </Header>
                 <Grid container spacing={0} alignItems="center">
                     {workout.exercises.map(exercise => {
-                        const { name, sets, reps, weight, unit } = exercise;
+                        const { name, sets, reps } = exercise;
+                        const { weight, unit } = exerciseWeight[exercise.name];
                         const barWeight = 45;
                         const weightPerSide = (weight - barWeight) / 2;
                         return (

@@ -3,7 +3,6 @@ import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
-import NativeSelect from '@material-ui/core/NativeSelect';
 import Header from '../../components/header';
 import Button from '@material-ui/core/Button';
 import { Link } from 'react-router-dom';
@@ -63,7 +62,7 @@ function EditWorkoutTemplate({
                     </Button>
                 </Link>
             </Header>
-            <Grid container spacing={12} alignItems={'center'}>
+            <Grid container spacing={16} alignItems={'center'}>
                 <Grid item xs={12}>
                     <Paper className={classes.root}>
                         <form>
@@ -105,7 +104,7 @@ function EditWorkoutTemplate({
                             </h3>
                             {template.exercises.map((e, i) => {
                                 return (
-                                    <fieldset>
+                                    <fieldset key={e.name}>
                                         <TextField
                                             label="Exercise Name"
                                             value={e.name}

@@ -15,13 +15,22 @@ const styles = theme => ({
     }
 });
 
-class Home extends Component {
-    renderWorkout = workout => {
-        const { classes } = this.props;
+function Home({ completedWorkouts, exerciseWeight, nextWorkout }) {
+    const getWeightAndUnit = exercise => {
+        return printWeightAndUnit(
+            exercise.weight ? exercise : exerciseWeight[exercise.name]
+        );
+    };
+
+    const printWeightAndUnit = exercise => {
+        return `${exercise.weight}${exercise.unit}`;
+    };
+
+    const renderWorkout = workout => {
         return (
             <Grid item xs={12} key={workout.date}>
                 <Link to="/workout">
-                    <Paper className={classes.root}>
+                    <Paper>
                         <Grid container alignItems={'center'}>
                             <Grid item xs={4}>
                                 {workout.date}
@@ -34,9 +43,8 @@ class Home extends Component {
                                                 {e.name}
                                             </Grid>
                                             <Grid item xs={6}>
-                                                {`${e.sets}x${e.reps} ${
-                                                    e.weight
-                                                }${e.unit}`}
+                                                {`${e.sets}x${e.reps} 
+                                                ${getWeightAndUnit(e)}`}
                                             </Grid>
                                         </React.Fragment>
                                     );
@@ -49,16 +57,12 @@ class Home extends Component {
         );
     };
 
-    render() {
-        const { completedWorkouts, nextWorkout } = this.props;
-
-        return (
-            <Grid container spacing={16} alignItems={'center'}>
-                {[nextWorkout].map(this.renderWorkout)}
-                {completedWorkouts.map(this.renderWorkout)}
-            </Grid>
-        );
-    }
+    return (
+        <Grid container spacing={16} alignItems={'center'}>
+            {[nextWorkout].map(renderWorkout)}
+            {completedWorkouts.map(renderWorkout)}
+        </Grid>
+    );
 }
 
 export default withStyles(styles)(Home);

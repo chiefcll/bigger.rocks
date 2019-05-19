@@ -57,7 +57,7 @@ class Layout extends React.Component {
     };
 
     render() {
-        const { classes, isAuthed } = this.props;
+        const { isAuthed } = this.props;
         const { selectedIndex } = this.state;
         const showLayout =
             isAuthed && selectedIndex !== -1 && selectedIndex < 3;

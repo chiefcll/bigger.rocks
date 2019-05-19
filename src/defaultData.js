@@ -7,24 +7,18 @@ const workoutTemplates = [
                 name: 'Squat',
                 reps: 5,
                 sets: 5,
-                weight: 110,
-                unit: 'lbs',
                 setsCompleted: []
             },
             {
                 name: 'Bench',
                 reps: 5,
                 sets: 5,
-                weight: 160,
-                unit: 'lbs',
                 setsCompleted: []
             },
             {
                 name: 'Row',
                 reps: 5,
                 sets: 5,
-                weight: 110,
-                unit: 'lbs',
                 setsCompleted: []
             }
         ]
@@ -37,24 +31,18 @@ const workoutTemplates = [
                 name: 'Squat',
                 reps: 5,
                 sets: 5,
-                weight: 110,
-                unit: 'lbs',
                 setsCompleted: []
             },
             {
                 name: 'Overhead Press',
                 reps: 5,
                 sets: 5,
-                weight: 100,
-                unit: 'lbs',
                 setsCompleted: []
             },
             {
                 name: 'Deadlifts',
                 reps: 5,
                 sets: 5,
-                weight: 220,
-                unit: 'lbs',
                 setsCompleted: []
             }
         ]
@@ -70,24 +58,18 @@ const workout = {
             name: 'Squat',
             reps: 5,
             sets: 5,
-            weight: 110,
-            unit: 'lbs',
             setsCompleted: []
         },
         {
             name: 'Bench',
             reps: 5,
             sets: 5,
-            weight: 160,
-            unit: 'lbs',
             setsCompleted: []
         },
         {
             name: 'Row',
             reps: 5,
             sets: 5,
-            weight: 110,
-            unit: 'lbs',
             setsCompleted: []
         }
     ]
@@ -123,6 +105,8 @@ let completedWorkout = {
 
 completedWorkout.exercises.forEach(e => {
     const { reps, sets } = e;
+    e.weight = exerciseWeight[e.name].weight;
+    e.unit = exerciseWeight[e.name].unit;
     for (let i = 0; i < sets; i++) {
         e.setsCompleted.push(reps);
     }

@@ -29,7 +29,6 @@ const styles = theme => ({
     }
 });
 
-
 class ExerciseWeight extends Component {
     constructor(props) {
         super(props);
@@ -38,7 +37,7 @@ class ExerciseWeight extends Component {
     }
 
     changeWeight(exerciseName, incrementOrDecrement) {
-        this.setState(({exerciseWeight, settings}) => {
+        this.setState(({ exerciseWeight, settings }) => {
             let exercise = {
                 ...exerciseWeight[exerciseName]
             };
@@ -55,8 +54,7 @@ class ExerciseWeight extends Component {
 
     render() {
         const { classes, saveExerciseWeight } = this.props;
-        const { exerciseWeight, settings } = this.state;
-        const { incrementWeightBy } = settings;
+        const { exerciseWeight } = this.state;
 
         return (
             <>
@@ -86,12 +84,16 @@ class ExerciseWeight extends Component {
                                                 classes.exerciseName
                                             } ${classes.exerciseHeader}`}
                                         >
-                                            {exerciseName} - {weight}{unit}
+                                            {exerciseName} - {weight}
+                                            {unit}
                                         </Grid>
                                         <Grid container justify="space-between">
                                             <Fab
                                                 onClick={() =>
-                                                    this.changeWeight(exerciseName, 'decrement')
+                                                    this.changeWeight(
+                                                        exerciseName,
+                                                        'decrement'
+                                                    )
                                                 }
                                             >
                                                 <span
@@ -105,7 +107,10 @@ class ExerciseWeight extends Component {
 
                                             <Fab
                                                 onClick={() =>
-                                                    this.changeWeight(exerciseName, 'increment')
+                                                    this.changeWeight(
+                                                        exerciseName,
+                                                        'increment'
+                                                    )
                                                 }
                                             >
                                                 <span

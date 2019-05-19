@@ -15,10 +15,6 @@ function _resetState() {
     store.set(storageKey, { ...defaultState });
 }
 
-function workoutIsCompleted(workout) {
-    return workout.exercises.every(e => e.setsCompleted.length === e.sets);
-}
-
 function getNextWorkout(templates, workout) {
     const nextId = workout.id + 1;
     const nextTemplate =
@@ -79,28 +75,24 @@ function completeWorkout({
     exerciseWeight,
     settings
 }) {
-    if (workoutIsCompleted(workout)) {
-        workout.date = new Date().toDateString();
+    workout.date = new Date().toDateString();
 
-        workoutTemplates = updateWeightForNextWorkout({
-            workoutTemplates,
-            exerciseWeight,
-            workout,
-            incrementWeightBy: settings.incrementWeightBy
-        });
+    workoutTemplates = updateWeightForNextWorkout({
+        workoutTemplates,
+        exerciseWeight,
+        workout,
+        incrementWeightBy: settings.incrementWeightBy
+    });
 
-        const nextWorkout = getNextWorkout(workoutTemplates, workout);
-        nextWorkout.date = 'Next';
+    const nextWorkout = getNextWorkout(workoutTemplates, workout);
+    nextWorkout.date = 'Next';
 
-        return {
-            exerciseWeight,
-            workout: nextWorkout,
-            completedWorkouts: [workout, ...completedWorkouts],
-            workoutTemplates
-        };
-    }
-
-    return false;
+    return {
+        exerciseWeight,
+        workout: nextWorkout,
+        completedWorkouts: [workout, ...completedWorkouts],
+        workoutTemplates
+    };
 }
 
 export default {
