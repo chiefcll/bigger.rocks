@@ -73,8 +73,30 @@ class Workout extends Component {
         });
     };
 
+    workoutIsComplete(workout) {
+        return workout.exercises.every(e => e.setsCompleted.length === e.sets);
+    }
+
+    setRepsCompleted = () => {
+        this.setState(({ workout }) => {
+            workout.exercises.forEach(e => {
+                const { sets, reps } = e;
+                for (let i = 0; i < sets; i++) {
+                    e.setsCompleted.push(reps);
+                }
+            });
+
+            return {
+                showTimer: false,
+                workout: {
+                    ...workout
+                }
+            };
+        });
+    };
+
     render() {
-        const { classes, completeWorkout } = this.props;
+        const { classes, actions, dispatch, exerciseWeight } = this.props;
         const { workout, showTimer, lastCompletedIndex } = this.state;
 
         return (
@@ -83,7 +105,11 @@ class Workout extends Component {
                     <Link to="/">
                         <Button
                             style={{ color: 'white' }}
-                            onClick={() => completeWorkout(workout)}
+                            onClick={() => {
+                                if (this.workoutIsComplete(workout)) {
+                                    dispatch(actions.workout.complete(workout));
+                                }
+                            }}
                         >
                             Done
                         </Button>
@@ -91,7 +117,8 @@ class Workout extends Component {
                 </Header>
                 <Grid container spacing={0} alignItems="center">
                     {workout.exercises.map(exercise => {
-                        const { name, sets, reps, weight, unit } = exercise;
+                        const { name, sets, reps } = exercise;
+                        const { weight, unit } = exerciseWeight[exercise.name];
                         const barWeight = 45;
                         const weightPerSide = (weight - barWeight) / 2;
                         return (
@@ -157,6 +184,9 @@ class Workout extends Component {
                         </div>
                     )}
                 </Grid>
+                <Button onClick={this.setRepsCompleted}>
+                    Set Reps Completed
+                </Button>
             </>
         );
     }

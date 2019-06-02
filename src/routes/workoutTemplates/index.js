@@ -20,7 +20,7 @@ const styles = theme => ({
 
 function renderTemplate(template, classes) {
     return (
-        <Grid item xs={12}>
+        <Grid item xs={12} key={template.id}>
             <Link to={`/editWorkoutTemplate/${template.id}`}>
                 <Paper className={classes.root}>
                     <Grid container xs={12} alignItems={'center'}>

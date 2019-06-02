@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
@@ -29,103 +29,78 @@ const styles = theme => ({
     }
 });
 
+function ExerciseWeight({ classes, exerciseWeight, dispatch, actions }) {
+    return (
+        <>
+            <Header pageName="Exercise Weight">
+                <Link to="/">
+                    <Button style={{ color: 'white' }}>Done</Button>
+                </Link>
+            </Header>
+            <Grid container spacing={0} alignItems="center">
+                {Object.keys(exerciseWeight).map(exerciseName => {
+                    const exercise = exerciseWeight[exerciseName];
+                    const { weight, unit } = exercise;
 
-class ExerciseWeight extends Component {
-    constructor(props) {
-        super(props);
-        this.state = { ...props };
-        this.changeWeight = this.changeWeight.bind(this);
-    }
-
-    changeWeight(exerciseName, incrementOrDecrement) {
-        this.setState(({exerciseWeight, settings}) => {
-            let exercise = {
-                ...exerciseWeight[exerciseName]
-            };
-
-            if (incrementOrDecrement === 'increment') {
-                exercise.weight += settings.incrementWeightBy;
-            } else {
-                exercise.weight -= settings.incrementWeightBy;
-            }
-            exerciseWeight[exerciseName] = exercise;
-            return exerciseWeight;
-        });
-    }
-
-    render() {
-        const { classes, saveExerciseWeight } = this.props;
-        const { exerciseWeight, settings } = this.state;
-        const { incrementWeightBy } = settings;
-
-        return (
-            <>
-                <Header pageName="Exercise Weight">
-                    <Link to="/">
-                        <Button
-                            style={{ color: 'white' }}
-                            onClick={() => saveExerciseWeight(exerciseWeight)}
-                        >
-                            Done
-                        </Button>
-                    </Link>
-                </Header>
-                <Grid container spacing={0} alignItems="center">
-                    {Object.keys(exerciseWeight).map(exerciseName => {
-                        const exercise = exerciseWeight[exerciseName];
-                        const { weight, unit } = exercise;
-
-                        return (
-                            <Grid key={exerciseName} item xs={12}>
-                                <Paper className={classes.root}>
-                                    <Grid container alignItems="center">
-                                        <Grid
-                                            item
-                                            xs={6}
-                                            className={`${
-                                                classes.exerciseName
-                                            } ${classes.exerciseHeader}`}
-                                        >
-                                            {exerciseName} - {weight}{unit}
-                                        </Grid>
-                                        <Grid container justify="space-between">
-                                            <Fab
-                                                onClick={() =>
-                                                    this.changeWeight(exerciseName, 'decrement')
-                                                }
-                                            >
-                                                <span
-                                                    style={{
-                                                        fontSize: '1.5rem'
-                                                    }}
-                                                >
-                                                    -
-                                                </span>
-                                            </Fab>
-
-                                            <Fab
-                                                onClick={() =>
-                                                    this.changeWeight(exerciseName, 'increment')
-                                                }
-                                            >
-                                                <span
-                                                    style={{
-                                                        fontSize: '1.5rem'
-                                                    }}
-                                                >
-                                                    +
-                                                </span>
-                                            </Fab>
-                                        </Grid>
+                    return (
+                        <Grid key={exerciseName} item xs={12}>
+                            <Paper className={classes.root}>
+                                <Grid container alignItems="center">
+                                    <Grid
+                                        item
+                                        xs={6}
+                                        className={`${classes.exerciseName} ${
+                                            classes.exerciseHeader
+                                        }`}
+                                    >
+                                        {exerciseName} - {weight}
+                                        {unit}
                                     </Grid>
-                                </Paper>
-                            </Grid>
-                        );
-                    })}
-                </Grid>
-            </>
-        );
-    }
+                                    <Grid container justify="space-between">
+                                        <Fab
+                                            onClick={() =>
+                                                dispatch(
+                                                    actions.exerciseWeight.decrement(
+                                                        exerciseName
+                                                    )
+                                                )
+                                            }
+                                        >
+                                            <span
+                                                style={{
+                                                    fontSize: '1.5rem'
+                                                }}
+                                            >
+                                                -
+                                            </span>
+                                        </Fab>
+
+                                        <Fab
+                                            onClick={() =>
+                                                dispatch(
+                                                    actions.exerciseWeight.increment(
+                                                        exerciseName
+                                                    )
+                                                )
+                                            }
+                                        >
+                                            <span
+                                                style={{
+                                                    fontSize: '1.5rem'
+                                                }}
+                                            >
+                                                +
+                                            </span>
+                                        </Fab>
+                                    </Grid>
+                                </Grid>
+                            </Paper>
+                        </Grid>
+                    );
+                })}
+            </Grid>
+        </>
+    );
 }
 
 export default withStyles(styles)(ExerciseWeight);
