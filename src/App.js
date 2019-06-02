@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect, useReducer } from 'react';
+import React, { useEffect, useReducer } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import SignIn from './routes/signin';
 import Home from './routes/home';
@@ -14,17 +14,13 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import './App.css';
 import data from './data';
 import reducers from './store/reducers';
+import actions from './store/actions';
 
 function signIn() {
     return <SignIn auth={false} />;
 }
 
 function App() {
-    // const [state, updateAppState] = useState({
-    //     ...data.state,
-    //     isAuthed: true
-    // });
-
     const [state, dispatch] = useReducer(reducers, {
         ...data.state,
         isAuthed: true
@@ -72,7 +68,7 @@ function App() {
                                     <Workout
                                         workout={workout}
                                         exerciseWeight={exerciseWeight}
-                                        actions={data.actions}
+                                        actions={actions}
                                         dispatch={dispatch}
                                     />
                                 )}
@@ -84,7 +80,8 @@ function App() {
                                     <ExerciseWeight
                                         exerciseWeight={exerciseWeight}
                                         settings={settings}
-                                        saveExerciseWeight={() => {}}
+                                        actions={actions}
+                                        dispatch={dispatch}
                                     />
                                 )}
                             />

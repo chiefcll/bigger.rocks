@@ -77,20 +77,23 @@ class Workout extends Component {
         return workout.exercises.every(e => e.setsCompleted.length === e.sets);
     }
 
-    completeWorkout(actions, workout) {
-        actions.updateAppState(state => {
-            let updatedState = actions.completeWorkout({
-                ...state,
-                ...workout
+    setRepsCompleted = () => {
+        this.setState(({ workout }) => {
+            workout.exercises.forEach(e => {
+                const { sets, reps } = e;
+                for (let i = 0; i < sets; i++) {
+                    e.setsCompleted.push(reps);
+                }
             });
 
-            if (updatedState) {
-                return updatedState;
-            }
-
-            return state;
+            return {
+                showTimer: false,
+                workout: {
+                    ...workout
+                }
+            };
         });
-    }
+    };
 
     render() {
         const { classes, actions, dispatch, exerciseWeight } = this.props;
@@ -104,11 +107,7 @@ class Workout extends Component {
                             style={{ color: 'white' }}
                             onClick={() => {
                                 if (this.workoutIsComplete(workout)) {
-                                    dispatch({
-                                        type: 'WORKOUT_COMPLETED',
-                                        workout
-                                    });
-                                    //dispatch(actions.completeWorkout(workout));
+                                    dispatch(actions.workout.complete(workout));
                                 }
                             }}
                         >
@@ -185,6 +184,9 @@ class Workout extends Component {
                         </div>
                     )}
                 </Grid>
+                <Button onClick={this.setRepsCompleted}>
+                    Set Reps Completed
+                </Button>
             </>
         );
     }

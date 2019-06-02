@@ -21,6 +21,6 @@ export default (state, action) => {
         case 'WORKOUT_COMPLETED':
             return completeWorkout(state, action.workout);
         default:
-            return state;
+            return state.workout;
     }
 };
