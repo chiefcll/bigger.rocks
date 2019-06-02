@@ -7,13 +7,15 @@ function addWeight({ exerciseWeight }, workout) {
     return { ...workout, exercises };
 }
 
+const dateOptions = { weekday: 'short', month: 'short', day: '2-digit' };
+
 export default (state, action) => {
     switch (action.type) {
         case 'WORKOUT_COMPLETED':
             return [
                 {
                     ...addWeight(state, action.workout),
-                    date: new Date().toDateString()
+                    date: new Date().toLocaleDateString('en-US', dateOptions)
                 },
                 ...state.completedWorkouts
             ];

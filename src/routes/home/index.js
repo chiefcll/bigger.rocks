@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 const styles = theme => ({
     root: {
         ...theme.mixins.gutters(),
-        margin: theme.spacing.unit * 2,
+        margin: theme.spacing(2),
         backgroundColor: theme.palette.background.paper
     },
     inline: {
@@ -58,7 +58,7 @@ function Home({ completedWorkouts, exerciseWeight, nextWorkout }) {
     };
 
     return (
-        <Grid container spacing={16} alignItems={'center'}>
+        <Grid container spacing={1} alignItems={'center'}>
             {[nextWorkout].map(renderWorkout)}
             {completedWorkouts.map(renderWorkout)}
         </Grid>

@@ -99,7 +99,7 @@ const exerciseWeight = {
 };
 
 let completedWorkout = {
-    date: 'Sat Mar 23 2019',
+    date: 'Sat, Mar 23',
     ...workoutTemplates[1]
 };
 
