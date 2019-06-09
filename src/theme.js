@@ -10,7 +10,10 @@ export default createMuiTheme({
     overrides: {
         MuiBottomNavigation: {
             root: {
-                backgroundColor: blueGrey[500]
+            }
+        },
+        MuiBottomNavigationAction: {
+            root: {
             }
         }
     }

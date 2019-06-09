@@ -1,16 +1,9 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
-import Header from '../header';
 import Footer from '../footer';
 
 const styles = {
-    root: {
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        right: 0
-    }
 };
 
 const ROUTES = {
@@ -65,8 +58,7 @@ class Layout extends React.Component {
         if (showLayout) {
             return (
                 <>
-                    <Header pageName={this.state.pageName} />
-                    <div style={{ padding: 8 }}>{this.props.children}</div>
+                    {this.props.children}
                     <Footer
                         navClickHandler={this.navClicked}
                         selectedIndex={this.state.selectedIndex}

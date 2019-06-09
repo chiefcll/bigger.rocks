@@ -3,19 +3,21 @@ import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import { Link } from 'react-router-dom';
+import Header from '../../components/header';
 
 const styles = theme => ({
     root: {
-        ...theme.mixins.gutters(),
-        margin: theme.spacing(2),
-        backgroundColor: theme.palette.background.paper
+        margin: theme.spacing.unit,
+        padding: '8px',
+        backgroundColor: theme.palette.background.paper,
+        fontSize: '1rem'
     },
     inline: {
         display: 'inline'
     }
 });
 
-function Home({ completedWorkouts, exerciseWeight, nextWorkout }) {
+function Home({ completedWorkouts, exerciseWeight, nextWorkout, classes }) {
     const getWeightAndUnit = exercise => {
         return printWeightAndUnit(
             exercise.weight ? exercise : exerciseWeight[exercise.name]
@@ -30,7 +32,7 @@ function Home({ completedWorkouts, exerciseWeight, nextWorkout }) {
         return (
             <Grid item xs={12} key={workout.date}>
                 <Link to="/workout">
-                    <Paper>
+                    <Paper className={classes.root}>
                         <Grid container alignItems={'center'}>
                             <Grid item xs={4}>
                                 {workout.date}
@@ -43,7 +45,7 @@ function Home({ completedWorkouts, exerciseWeight, nextWorkout }) {
                                                 {e.name}
                                             </Grid>
                                             <Grid item xs={6}>
-                                                {`${e.sets}x${e.reps} 
+                                                {`${e.sets}x${e.reps}
                                                 ${getWeightAndUnit(e)}`}
                                             </Grid>
                                         </React.Fragment>
@@ -58,10 +60,13 @@ function Home({ completedWorkouts, exerciseWeight, nextWorkout }) {
     };
 
     return (
-        <Grid container spacing={1} alignItems={'center'}>
-            {[nextWorkout].map(renderWorkout)}
-            {completedWorkouts.map(renderWorkout)}
-        </Grid>
+        <>
+            <Header pageName = 'Workouts' />
+            <Grid container spacing={0} alignItems={'center'}>
+                {[nextWorkout].map(renderWorkout)}
+                {completedWorkouts.map(renderWorkout)}
+            </Grid>
+        </>
     );
 }
 

@@ -7,24 +7,14 @@ import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import FitnessCenterIcon from '@material-ui/icons/FitnessCenter';
 import SettingsIcon from '@material-ui/icons/Settings';
-import { blueGrey } from '@material-ui/core/colors';
 
 const styles = {
     root: {
         position: 'absolute',
-        bottom: 0,
+        bottom: '15px',
         left: 0,
         right: 0,
-        backgroundColor: blueGrey[500]
-    }
-};
-
-const icons = {
-    root: {
-        color: 'green'
-    },
-    colorPrimary: {
-        color: 'red'
+        height: '64px'
     }
 };
 
@@ -37,19 +27,17 @@ function SimpleBottomNavigation({ classes, navClickHandler, selectedIndex }) {
         >
             <BottomNavigationAction
                 label="Workouts"
-                icon={
-                    <FitnessCenterIcon className={icons.root} color="primary" />
-                }
+                icon = {<FitnessCenterIcon />}
                 onClick={navClickHandler('Workouts')}
             />
             <BottomNavigationAction
                 label="History"
-                icon={<CalendarTodayIcon classes={icons} />}
+                icon = {<CalendarTodayIcon />}
                 onClick={navClickHandler('History')}
             />
             <BottomNavigationAction
                 label="Settings"
-                icon={<SettingsIcon classes={icons} />}
+                icon = {<SettingsIcon />}
                 onClick={navClickHandler('Settings')}
             />
         </BottomNavigation>

@@ -7,23 +7,30 @@ import Button from '@material-ui/core/Button';
 import { Link } from 'react-router-dom';
 import Header from '../../components/header';
 import Timer from '../../components/timer';
+import clsx from 'clsx';
 
 const styles = theme => ({
     root: {
-        ...theme.mixins.gutters(),
         margin: theme.spacing.unit,
         padding: '8px',
-        backgroundColor: theme.palette.background.paper
+        backgroundColor: theme.palette.background.paper,
+        fontSize: '1rem'
     },
     exerciseHeader: {
-        paddingTop: '5px',
-        paddingBottom: '5px'
+        paddingTop: '1px',
+        paddingBottom: '5px',
+        fontSize: '1.2rem'
     },
     exerciseName: {
-        textAlign: 'left'
+        textAlign: 'left',
+        paddingLeft: '8px'
     },
     exerciseProps: {
-        textAlign: 'right'
+        textAlign: 'right',
+        paddingRight: '8px'
+    },
+    fabs: {
+
     },
     inline: {
         display: 'inline'
@@ -127,7 +134,7 @@ class Workout extends Component {
                                     <Grid container alignItems="center">
                                         <Grid
                                             item
-                                            xs={6}
+                                            xs={3}
                                             className={`${
                                                 classes.exerciseName
                                             } ${classes.exerciseHeader}`}
@@ -136,12 +143,14 @@ class Workout extends Component {
                                         </Grid>
                                         <Grid
                                             item
-                                            xs={6}
-                                            className={classes.exerciseProps}
+                                            xs={9}
+                                            className = {
+                                                clsx(classes.exerciseProps, classes.exerciseHeader)
+                                            }
                                         >
                                             {`${sets}x${reps} ${weight}${unit} - ${weightPerSide}${unit}`}
                                         </Grid>
-                                        <Grid container justify="space-between">
+                                        <Grid container justify="space-between" className={classes.fabs}>
                                             {times(sets)((key, index) => (
                                                 <Fab
                                                     key={index}
@@ -154,7 +163,7 @@ class Workout extends Component {
                                                 >
                                                     <span
                                                         style={{
-                                                            fontSize: '1.5rem'
+                                                            fontSize: '1.4rem'
                                                         }}
                                                     >
                                                         {

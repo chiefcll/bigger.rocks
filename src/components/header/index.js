@@ -4,6 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
+import clsx from 'clsx';
 
 const styles = {
     root: {
@@ -12,14 +13,17 @@ const styles = {
     grow: {
         flexGrow: 1
     },
-    menuButton: {
-        marginLeft: -12,
-        marginRight: 20
+    left: {
+        textAlign: 'left'
     }
 };
 
 function ButtonAppBar(props) {
-    const { classes, pageName } = props;
+    const { classes, pageName, children } = props;
+    let textClasses = classes.grow;
+    if (children) {
+        textClasses = clsx(classes.grow, classes.left);
+    }
     return (
         <div className={classes.root}>
             <AppBar position="static">
@@ -27,11 +31,11 @@ function ButtonAppBar(props) {
                     <Typography
                         variant="h6"
                         color="inherit"
-                        className={classes.grow}
+                        className={textClasses}
                     >
                         {pageName}
                     </Typography>
-                    {props.children}
+                    {children}
                 </Toolbar>
             </AppBar>
         </div>
