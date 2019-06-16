@@ -6,11 +6,12 @@ import TextField from '@material-ui/core/TextField';
 import Header from '../../components/header';
 import Button from '@material-ui/core/Button';
 import { Link } from 'react-router-dom';
+import { useStateValue } from '../../components/stateProvider';
 
 const styles = theme => ({
     root: {
         ...theme.mixins.gutters(),
-        margin: theme.spacing.unit * 2,
+        margin: theme.spacing(2),
         backgroundColor: theme.palette.background.paper
     },
     inline: {
@@ -30,31 +31,30 @@ function handleChange({ set, template, key, event, index }) {
 }
 
 function getWorkoutTemplate(workoutTemplates, id) {
-    return workoutTemplates.filter(wt => wt.id === id)[0];
+    return {
+        ...workoutTemplates.filter(wt => wt.id === id)[0]
+    };
 }
 
-function EditWorkoutTemplate({
-    workoutTemplates,
-    classes,
-    updateAppState,
-    match
-}) {
+function EditWorkoutTemplate({ classes, match }) {
     const id = parseInt(match.params.id);
+    const [state, dispatch] = useStateValue();
+    const { workoutTemplates } = state;
     const [template, setTemplate] = useState(
         getWorkoutTemplate(workoutTemplates, id)
     );
-
     return (
         <>
-            <Header pageName="Exercise Weight">
-                <Link to="/">
+            <Header pageName="Edit Workout Template">
+                <Link to="/workoutTemplates">
                     <Button
                         style={{ color: 'white' }}
                         onClick={() => {
-                            let wt = getWorkoutTemplate(workoutTemplates, id);
-                            wt = template;
-                            updateAppState({
-                                workoutTemplates: [...workoutTemplates]
+                            dispatch({
+                                type: 'UPDATE_WORKOUT_TEMPLATE',
+                                payload: {
+                                    workoutTemplate: template
+                                }
                             });
                         }}
                     >
@@ -62,7 +62,7 @@ function EditWorkoutTemplate({
                     </Button>
                 </Link>
             </Header>
-            <Grid container spacing={16} alignItems={'center'}>
+            <Grid container spacing={0} alignItems={'center'}>
                 <Grid item xs={12}>
                     <Paper className={classes.root}>
                         <form>

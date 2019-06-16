@@ -11,7 +11,7 @@ import clsx from 'clsx';
 
 const styles = theme => ({
     root: {
-        margin: theme.spacing.unit,
+        margin: theme.spacing(1),
         padding: '8px',
         backgroundColor: theme.palette.background.paper,
         fontSize: '1rem'
@@ -29,9 +29,7 @@ const styles = theme => ({
         textAlign: 'right',
         paddingRight: '8px'
     },
-    fabs: {
-
-    },
+    fabs: {},
     inline: {
         display: 'inline'
     },
@@ -40,9 +38,9 @@ const styles = theme => ({
     },
     timerContainer: {
         position: 'absolute',
-        bottom: theme.spacing.unit,
+        bottom: theme.spacing(1),
         right: 0,
-        left: theme.spacing.unit,
+        left: theme.spacing(1),
         fontSize: '1.5rem',
         textAlign: 'left'
     }
@@ -144,13 +142,18 @@ class Workout extends Component {
                                         <Grid
                                             item
                                             xs={9}
-                                            className = {
-                                                clsx(classes.exerciseProps, classes.exerciseHeader)
-                                            }
+                                            className={clsx(
+                                                classes.exerciseProps,
+                                                classes.exerciseHeader
+                                            )}
                                         >
                                             {`${sets}x${reps} ${weight}${unit} - ${weightPerSide}${unit}`}
                                         </Grid>
-                                        <Grid container justify="space-between" className={classes.fabs}>
+                                        <Grid
+                                            container
+                                            justify="space-between"
+                                            className={classes.fabs}
+                                        >
                                             {times(sets)((key, index) => (
                                                 <Fab
                                                     key={index}

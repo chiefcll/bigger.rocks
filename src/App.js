@@ -17,6 +17,7 @@ import './App.css';
 import data from './data';
 import reducers from './store/reducers';
 import actions from './store/actions';
+import { StateProvider } from './components/stateProvider';
 
 function signIn() {
     return <SignIn auth={false} />;
@@ -43,92 +44,98 @@ function App() {
         settings
     } = state;
 
-    //data.saveState(state);
+    data.saveState(state);
     //data._resetState();
     return (
         <div className="App">
-            <ThemeProvider theme={theme}>
-                <CssBaseline />
-                <Router>
-                    {isAuthed ? (
-                        <Layout isAuthed={isAuthed}>
-                            <Switch>
-                                <Route
-                                    path="/"
-                                    exact
-                                    render={() => (
-                                        <Home
-                                            nextWorkout={workout}
-                                            exerciseWeight={exerciseWeight}
-                                            completedWorkouts={
-                                                completedWorkouts
-                                            }
-                                        />
-                                    )}
-                                />
-                                <Route
-                                    path="/workout"
-                                    exact
-                                    render={() => (
-                                        <Workout
-                                            workout={workout}
-                                            exerciseWeight={exerciseWeight}
-                                            actions={actions}
-                                            dispatch={dispatch}
-                                        />
-                                    )}
-                                />
-                                <Route
-                                    path="/exerciseWeight"
-                                    exact
-                                    render={() => (
-                                        <ExerciseWeight
-                                            exerciseWeight={exerciseWeight}
-                                            settings={settings}
-                                            actions={actions}
-                                            dispatch={dispatch}
-                                        />
-                                    )}
-                                />
-                                <Route
-                                    path="/workoutTemplates"
-                                    exact
-                                    render={() => (
-                                        <WorkoutTemplates
-                                            workoutTemplates={workoutTemplates}
-                                            dispatch={dispatch}
-                                        />
-                                    )}
-                                />
-                                <Route
-                                    path="/editWorkoutTemplate/:id"
-                                    exact
-                                    render={params => (
-                                        <EditWorkoutTemplate
-                                            workoutTemplates={workoutTemplates}
-                                            dispatch={dispatch}
-                                            {...params}
-                                        />
-                                    )}
-                                />
-                                <Route
-                                    path="/settings"
-                                    exact
-                                    component={Settings}
-                                />
-                                <Route
-                                    path="/history"
-                                    exact
-                                    component={History}
-                                />
-                                <Route component={NotFound} />
-                            </Switch>
-                        </Layout>
-                    ) : (
-                        <Route render={signIn} />
-                    )}
-                </Router>
-            </ThemeProvider>
+            <StateProvider reducer={reducers} initialState={state}>
+                <ThemeProvider theme={theme}>
+                    <CssBaseline />
+                    <Router>
+                        {isAuthed ? (
+                            <Layout isAuthed={isAuthed}>
+                                <Switch>
+                                    <Route
+                                        path="/"
+                                        exact
+                                        render={() => (
+                                            <Home
+                                                nextWorkout={workout}
+                                                exerciseWeight={exerciseWeight}
+                                                completedWorkouts={
+                                                    completedWorkouts
+                                                }
+                                            />
+                                        )}
+                                    />
+                                    <Route
+                                        path="/workout"
+                                        exact
+                                        render={() => (
+                                            <Workout
+                                                workout={workout}
+                                                exerciseWeight={exerciseWeight}
+                                                actions={actions}
+                                                dispatch={dispatch}
+                                            />
+                                        )}
+                                    />
+                                    <Route
+                                        path="/exerciseWeight"
+                                        exact
+                                        render={() => (
+                                            <ExerciseWeight
+                                                exerciseWeight={exerciseWeight}
+                                                settings={settings}
+                                                actions={actions}
+                                                dispatch={dispatch}
+                                            />
+                                        )}
+                                    />
+                                    <Route
+                                        path="/workoutTemplates"
+                                        exact
+                                        render={() => (
+                                            <WorkoutTemplates
+                                                workoutTemplates={
+                                                    workoutTemplates
+                                                }
+                                                dispatch={dispatch}
+                                            />
+                                        )}
+                                    />
+                                    <Route
+                                        path="/editWorkoutTemplate/:id"
+                                        exact
+                                        render={params => (
+                                            <EditWorkoutTemplate
+                                                workoutTemplates={
+                                                    workoutTemplates
+                                                }
+                                                dispatch={dispatch}
+                                                {...params}
+                                            />
+                                        )}
+                                    />
+                                    <Route
+                                        path="/settings"
+                                        exact
+                                        component={Settings}
+                                    />
+                                    <Route
+                                        path="/history"
+                                        exact
+                                        component={History}
+                                    />
+                                    <Route component={NotFound} />
+                                </Switch>
+                            </Layout>
+                        ) : (
+                            <Route render={signIn} />
+                        )}
+                    </Router>
+                </ThemeProvider>
+            </StateProvider>
         </div>
     );
 }

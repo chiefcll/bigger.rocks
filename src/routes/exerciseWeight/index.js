@@ -10,7 +10,7 @@ import Header from '../../components/header';
 const styles = theme => ({
     root: {
         ...theme.mixins.gutters(),
-        margin: theme.spacing.unit,
+        margin: theme.spacing(1),
         padding: '8px',
         backgroundColor: theme.palette.background.paper
     },

@@ -4,10 +4,11 @@ import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import { Link } from 'react-router-dom';
 import Header from '../../components/header';
+import ExerciseWeight from '../../components/exerciseWeight';
 
 const styles = theme => ({
     root: {
-        margin: theme.spacing.unit,
+        margin: theme.spacing(1),
         padding: '8px',
         backgroundColor: theme.palette.background.paper,
         fontSize: '1rem'
@@ -17,17 +18,7 @@ const styles = theme => ({
     }
 });
 
-function Home({ completedWorkouts, exerciseWeight, nextWorkout, classes }) {
-    const getWeightAndUnit = exercise => {
-        return printWeightAndUnit(
-            exercise.weight ? exercise : exerciseWeight[exercise.name]
-        );
-    };
-
-    const printWeightAndUnit = exercise => {
-        return `${exercise.weight}${exercise.unit}`;
-    };
-
+function Home({ completedWorkouts, nextWorkout, classes }) {
     const renderWorkout = workout => {
         return (
             <Grid item xs={12} key={workout.date}>
@@ -45,8 +36,7 @@ function Home({ completedWorkouts, exerciseWeight, nextWorkout, classes }) {
                                                 {e.name}
                                             </Grid>
                                             <Grid item xs={6}>
-                                                {`${e.sets}x${e.reps}
-                                                ${getWeightAndUnit(e)}`}
+                                                <ExerciseWeight exercise={e} />
                                             </Grid>
                                         </React.Fragment>
                                     );
@@ -61,7 +51,7 @@ function Home({ completedWorkouts, exerciseWeight, nextWorkout, classes }) {
 
     return (
         <>
-            <Header pageName = 'Workouts' />
+            <Header pageName="Workouts" />
             <Grid container spacing={0} alignItems={'center'}>
                 {[nextWorkout].map(renderWorkout)}
                 {completedWorkouts.map(renderWorkout)}
