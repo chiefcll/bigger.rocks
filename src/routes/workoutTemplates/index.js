@@ -74,14 +74,17 @@ function WorkoutTemplates({ workoutTemplates, dispatch, classes }) {
                         </Link>
                     </Grid>
                 ))}
-                <Link to={`/editWorkoutTemplate/${nextWorkoutId}`}>
-                    <Button
-                        style={{ color: 'white' }}
-                        onClick={() => addWorkoutTemplate()}
-                    >
-                        Add Workout Template
-                    </Button>
-                </Link>
+                <div style={{}}>
+                    <Link to={`/editWorkoutTemplate/${nextWorkoutId}`}>
+                        <Button
+                            color="primary"
+                            variant="contained"
+                            onClick={() => addWorkoutTemplate()}
+                        >
+                            Add Workout Template
+                        </Button>
+                    </Link>
+                </div>
             </Grid>
         </>
     );

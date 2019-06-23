@@ -19,10 +19,11 @@ const styles = theme => ({
 });
 
 function Home({ completedWorkouts, nextWorkout, classes }) {
-    const renderWorkout = workout => {
+    const renderWorkout = (workout, index, isCompleted = true) => {
+        const linkTo = isCompleted ? `/completedWorkout/${index}` : '/workout';
         return (
             <Grid item xs={12} key={workout.date}>
-                <Link to="/workout">
+                <Link to={linkTo}>
                     <Paper className={classes.root}>
                         <Grid container alignItems={'center'}>
                             <Grid item xs={4}>
@@ -53,7 +54,7 @@ function Home({ completedWorkouts, nextWorkout, classes }) {
         <>
             <Header pageName="Workouts" />
             <Grid container spacing={0} alignItems={'center'}>
-                {[nextWorkout].map(renderWorkout)}
+                {renderWorkout(nextWorkout, undefined, false)}
                 {completedWorkouts.map(renderWorkout)}
             </Grid>
         </>

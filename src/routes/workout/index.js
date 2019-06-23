@@ -46,10 +46,14 @@ const styles = theme => ({
     }
 });
 
+const setsReps = ['4x6', '5x5', '3x10', '4x8', '5x8'];
+
 const times = n => f => {
     const loopFor = new Array(n).fill(0);
     return loopFor.map(f);
 };
+
+const totalVolume = ({ sets, reps, weight }) => sets * reps * weight;
 
 class Workout extends Component {
     constructor(props) {
@@ -100,6 +104,57 @@ class Workout extends Component {
         });
     };
 
+    changeSetsReps(name, weight) {
+        this.setState(({ workout }) => {
+            const exercises = workout.exercises.map(e => {
+                if (e.name === name) {
+                    const { sets, reps } = e;
+                    const index = setsReps.indexOf(`${sets}x${reps}`) + 1;
+                    const nextGroup = (setsReps[index] || setsReps[0]).split(
+                        'x'
+                    );
+                    let updatedVolume = {
+                        sets: parseInt(nextGroup[0], 10),
+                        reps: parseInt(nextGroup[1], 10),
+                        weight
+                    };
+                    const currentTotalVolume = totalVolume({
+                        sets: 5,
+                        reps: 5,
+                        weight
+                    });
+                    let newTotalVolume = totalVolume(updatedVolume);
+                    let range = 1.2;
+
+                    while (currentTotalVolume / range > newTotalVolume) {
+                        updatedVolume.weight += 5;
+                        newTotalVolume = totalVolume(updatedVolume);
+                    }
+
+                    while (currentTotalVolume * range < newTotalVolume) {
+                        updatedVolume.weight -= 5;
+                        newTotalVolume = totalVolume(updatedVolume);
+                    }
+
+                    return {
+                        ...e,
+                        setsCompleted: [],
+                        ...updatedVolume
+                    };
+                }
+                return e;
+            });
+
+            return {
+                showTimer: false,
+                workout: {
+                    ...workout,
+                    exercises
+                }
+            };
+        });
+    }
+
     render() {
         const { classes, actions, dispatch, exerciseWeight } = this.props;
         const { workout, showTimer, lastCompletedIndex } = this.state;
@@ -123,9 +178,13 @@ class Workout extends Component {
                 <Grid container spacing={0} alignItems="center">
                     {workout.exercises.map(exercise => {
                         const { name, sets, reps } = exercise;
-                        const { weight, unit } = exerciseWeight[exercise.name];
+                        const { weight: baseWeight, unit } = exerciseWeight[
+                            exercise.name
+                        ];
+                        const weight = exercise.weight || baseWeight;
                         const barWeight = 45;
                         const weightPerSide = (weight - barWeight) / 2;
+                        const totalVolume = sets * reps * weight;
                         return (
                             <Grid key={name} item xs={12}>
                                 <Paper className={classes.root}>
@@ -147,7 +206,18 @@ class Workout extends Component {
                                                 classes.exerciseHeader
                                             )}
                                         >
-                                            {`${sets}x${reps} ${weight}${unit} - ${weightPerSide}${unit}`}
+                                            {`${sets}x${reps}@${weight}${unit} (${totalVolume}) - ${weightPerSide}${unit}`}
+                                            <Button
+                                                color="primary"
+                                                onClick={() =>
+                                                    this.changeSetsReps(
+                                                        name,
+                                                        baseWeight
+                                                    )
+                                                }
+                                            >
+                                                Switch
+                                            </Button>
                                         </Grid>
                                         <Grid
                                             container

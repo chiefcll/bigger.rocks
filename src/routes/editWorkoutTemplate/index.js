@@ -83,8 +83,10 @@ function EditWorkoutTemplate({ classes, match }) {
                             />
 
                             <h3>
-                                Exercises
+                                Exercises{' '}
                                 <Button
+                                    color="primary"
+                                    variant="contained"
                                     style={{ color: 'white' }}
                                     onClick={() => {
                                         template.exercises.push({

@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import SignIn from './routes/signin';
 import Home from './routes/home';
 import Workout from './routes/workout';
+import CompletedWorkout from './routes/completedWorkout';
 import ExerciseWeight from './routes/exerciseWeight';
 import WorkoutTemplates from './routes/workoutTemplates';
 import EditWorkoutTemplate from './routes/editWorkoutTemplate';
@@ -78,6 +79,13 @@ function App() {
                                                 actions={actions}
                                                 dispatch={dispatch}
                                             />
+                                        )}
+                                    />
+                                    <Route
+                                        path="/completedWorkout/:id"
+                                        exact
+                                        render={params => (
+                                            <CompletedWorkout {...params} />
                                         )}
                                     />
                                     <Route
